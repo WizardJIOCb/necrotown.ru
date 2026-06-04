@@ -7,34 +7,38 @@
   <style>
     :root {
       color-scheme: dark;
-      --bg-1: #090909;
+      --bg-1: #070707;
       --bg-2: #1b0f12;
-      --panel: rgba(18, 14, 15, 0.84);
-      --panel-border: rgba(245, 239, 232, 0.14);
+      --panel: rgba(18, 14, 15, 0.9);
+      --panel-2: rgba(32, 24, 25, 0.82);
+      --border: rgba(245, 239, 232, 0.14);
       --accent: #d24b43;
-      --accent-2: #e8b15f;
+      --gold: #e8b15f;
       --text: #f5efe8;
       --muted: #b9aaa1;
+      --green: #75b66c;
+      --blue: #7da8d9;
     }
+
     * { box-sizing: border-box; }
+
     body {
       margin: 0;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
-      overflow: hidden;
+      overflow-x: hidden;
       background:
-        radial-gradient(circle at 18% 20%, rgba(232, 177, 95, 0.12), transparent 26%),
+        radial-gradient(circle at 18% 20%, rgba(232, 177, 95, 0.11), transparent 26%),
         radial-gradient(circle at top, rgba(210, 75, 67, 0.22), transparent 35%),
         linear-gradient(180deg, var(--bg-2), var(--bg-1));
       color: var(--text);
-      font-family: Georgia, "Times New Roman", serif;
+      font-family: Arial, sans-serif;
     }
 
     body::before {
       content: "";
       position: fixed;
       inset: 0;
+      z-index: -1;
       pointer-events: none;
       background:
         linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
@@ -44,15 +48,21 @@
       mask-image: linear-gradient(to bottom, transparent, black 18%, black 82%, transparent);
     }
 
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
     .intro {
+      min-height: 100vh;
       display: grid;
       place-items: center;
-      width: min(100%, 1200px);
       padding: 24px;
-      transition:
-        opacity 620ms ease,
-        transform 780ms cubic-bezier(.2, .8, .2, 1),
-        filter 620ms ease;
+      transition: opacity 620ms ease, transform 780ms cubic-bezier(.2, .8, .2, 1), filter 620ms ease;
     }
 
     .intro.is-hidden {
@@ -62,34 +72,28 @@
       pointer-events: none;
     }
 
-    h1 {
+    .brand {
       margin: 0;
       padding: 24px;
       border: 0;
       background: transparent;
       color: var(--text);
-      cursor: pointer;
-      font: inherit;
-      text-align: center;
+      font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(56px, 12vw, 144px);
       line-height: 0.95;
       letter-spacing: 0.08em;
+      text-align: center;
       text-transform: uppercase;
       text-shadow: 0 0 30px rgba(210, 75, 67, 0.35);
-      transition:
-        color 220ms ease,
-        transform 220ms ease,
-        text-shadow 220ms ease;
+      transition: color 220ms ease, transform 220ms ease, text-shadow 220ms ease;
     }
 
-    h1:hover,
-    h1:focus-visible {
+    .brand:hover,
+    .brand:focus-visible {
       color: #fff8ef;
       outline: 0;
       transform: translateY(-4px);
-      text-shadow:
-        0 0 34px rgba(210, 75, 67, 0.55),
-        0 0 70px rgba(232, 177, 95, 0.18);
+      text-shadow: 0 0 34px rgba(210, 75, 67, 0.55), 0 0 70px rgba(232, 177, 95, 0.18);
     }
 
     .auth-shell {
@@ -102,10 +106,7 @@
       visibility: hidden;
       pointer-events: none;
       transform: translateY(22px) scale(0.98);
-      transition:
-        opacity 520ms ease 220ms,
-        visibility 0s linear 760ms,
-        transform 620ms cubic-bezier(.2, .8, .2, 1) 220ms;
+      transition: opacity 520ms ease 220ms, visibility 0s linear 760ms, transform 620ms cubic-bezier(.2, .8, .2, 1) 220ms;
     }
 
     .auth-shell.is-visible {
@@ -116,22 +117,25 @@
       transition-delay: 180ms, 0s, 180ms;
     }
 
+    .auth-panel,
+    .hero-card,
+    .work-panel,
+    .chat-panel {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 42%), var(--panel);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+      backdrop-filter: blur(18px);
+    }
+
     .auth-panel {
       width: min(100%, 430px);
       padding: 24px;
-      border: 1px solid var(--panel-border);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.055), transparent 42%),
-        var(--panel);
-      box-shadow:
-        0 26px 70px rgba(0, 0, 0, 0.52),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(18px);
     }
 
     .auth-title {
       margin: 0 0 18px;
+      font-family: Georgia, "Times New Roman", serif;
       font-size: 30px;
       line-height: 1;
       letter-spacing: 0.06em;
@@ -149,20 +153,22 @@
       background: rgba(0, 0, 0, 0.2);
     }
 
-    .tab {
+    .tab,
+    .menu-button {
       min-height: 42px;
       border: 0;
       border-radius: 6px;
       background: transparent;
       color: var(--muted);
-      cursor: pointer;
-      font: 700 13px/1.1 Arial, sans-serif;
+      font-weight: 800;
+      font-size: 13px;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      transition: background 180ms ease, color 180ms ease;
+      transition: background 180ms ease, color 180ms ease, transform 180ms ease;
     }
 
-    .tab.is-active {
+    .tab.is-active,
+    .menu-button.is-active {
       background: rgba(210, 75, 67, 0.24);
       color: var(--text);
     }
@@ -180,7 +186,8 @@
       display: grid;
       gap: 7px;
       color: var(--muted);
-      font: 700 12px/1.2 Arial, sans-serif;
+      font-size: 12px;
+      font-weight: 800;
       letter-spacing: 0.04em;
       text-transform: uppercase;
     }
@@ -192,7 +199,6 @@
       border-radius: 6px;
       background: rgba(0, 0, 0, 0.3);
       color: var(--text);
-      font: 16px/1.2 Arial, sans-serif;
       padding: 12px 13px;
       outline: none;
       transition: border-color 180ms ease, box-shadow 180ms ease;
@@ -203,48 +209,482 @@
       box-shadow: 0 0 0 3px rgba(232, 177, 95, 0.12);
     }
 
-    .submit {
-      min-height: 48px;
-      margin-top: 4px;
+    .submit,
+    .chat-send,
+    .logout {
+      min-height: 44px;
       border: 0;
       border-radius: 6px;
       background: linear-gradient(135deg, var(--accent), #9d2d35);
       color: #fffaf4;
-      cursor: pointer;
-      font: 800 14px/1.1 Arial, sans-serif;
+      font-weight: 900;
+      font-size: 13px;
       letter-spacing: 0.05em;
       text-transform: uppercase;
       box-shadow: 0 12px 28px rgba(210, 75, 67, 0.25);
       transition: transform 180ms ease, filter 180ms ease;
     }
 
+    .submit {
+      margin-top: 4px;
+    }
+
     .submit:hover,
-    .submit:focus-visible {
+    .submit:focus-visible,
+    .chat-send:hover,
+    .chat-send:focus-visible,
+    .logout:hover,
+    .logout:focus-visible {
       outline: 0;
       transform: translateY(-1px);
       filter: brightness(1.08);
     }
 
-    @media (max-width: 520px) {
-      .intro {
-        padding: 12px;
+    .message {
+      min-height: 20px;
+      color: var(--gold);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .game-shell {
+      display: none;
+      min-height: 100vh;
+      padding: 18px;
+    }
+
+    body.is-game .intro,
+    body.is-game .auth-shell {
+      display: none;
+    }
+
+    body.is-game .game-shell {
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      gap: 12px;
+    }
+
+    .top-menu,
+    .resource-line {
+      display: grid;
+      gap: 8px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: rgba(12, 10, 10, 0.74);
+      padding: 8px;
+    }
+
+    .top-menu {
+      grid-template-columns: repeat(5, minmax(116px, 1fr)) auto;
+      align-items: center;
+    }
+
+    .logout {
+      min-width: 104px;
+      background: rgba(245, 239, 232, 0.11);
+      box-shadow: none;
+    }
+
+    .resource-line {
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+    }
+
+    .resource {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      align-items: center;
+      gap: 10px;
+      min-height: 46px;
+      padding: 7px 10px;
+      border: 1px solid rgba(245, 239, 232, 0.09);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .resource-icon {
+      position: relative;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .icon-bones::before,
+    .icon-bones::after {
+      content: "";
+      position: absolute;
+      background: #d9d0bf;
+    }
+
+    .icon-bones::before {
+      width: 19px;
+      height: 6px;
+      left: 5px;
+      top: 12px;
+      border-radius: 10px;
+      transform: rotate(-28deg);
+    }
+
+    .icon-bones::after {
+      width: 7px;
+      height: 7px;
+      left: 4px;
+      top: 9px;
+      border-radius: 50%;
+      box-shadow: 15px 7px 0 #d9d0bf;
+    }
+
+    .icon-souls {
+      border-radius: 50%;
+      background: radial-gradient(circle at 42% 38%, #dff7ff 0 18%, #7da8d9 19% 42%, rgba(125, 168, 217, 0.18) 43% 100%);
+      box-shadow: 0 0 18px rgba(125, 168, 217, 0.38);
+    }
+
+    .icon-iron {
+      clip-path: polygon(50% 2%, 92% 25%, 82% 82%, 50% 98%, 18% 82%, 8% 25%);
+      background: linear-gradient(135deg, #c9d0d5, #6b737d 55%, #363d44);
+    }
+
+    .icon-ether {
+      border-radius: 5px;
+      transform: rotate(45deg) scale(0.82);
+      background: linear-gradient(135deg, #efd48d, #8bd4c1 58%, #466c82);
+      box-shadow: 0 0 18px rgba(139, 212, 193, 0.32);
+    }
+
+    .icon-plague {
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, #d5f27d 0 18%, transparent 19%),
+        radial-gradient(circle at 50% 6px, #8fbf45 0 4px, transparent 5px),
+        radial-gradient(circle at 24px 21px, #8fbf45 0 4px, transparent 5px),
+        radial-gradient(circle at 6px 21px, #8fbf45 0 4px, transparent 5px),
+        #334020;
+    }
+
+    .resource-name {
+      display: block;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .resource-value {
+      display: block;
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1.1;
+    }
+
+    .play-layout {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 0;
+    }
+
+    .hero-card {
+      align-self: stretch;
+      padding: 14px;
+    }
+
+    .avatar {
+      width: 100%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(245, 239, 232, 0.13);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 34%, rgba(245, 239, 232, 0.2) 0 13%, transparent 14%),
+        radial-gradient(circle at 39% 31%, #f1d08d 0 3%, transparent 4%),
+        radial-gradient(circle at 61% 31%, #f1d08d 0 3%, transparent 4%),
+        linear-gradient(145deg, rgba(210, 75, 67, 0.32), rgba(125, 168, 217, 0.18)),
+        #151112;
+      box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.46);
+    }
+
+    .hero-name {
+      margin: 12px 0 3px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 23px;
+      line-height: 1.1;
+    }
+
+    .hero-class {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .stat-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+    }
+
+    .stat-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(245, 239, 232, 0.08);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-row strong {
+      color: var(--text);
+    }
+
+    .work-panel {
+      min-width: 0;
+      min-height: 470px;
+      padding: 14px;
+    }
+
+    .work-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .work-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .work-meta {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .city-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 12px;
+      min-height: 390px;
+    }
+
+    .buildings {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      align-content: start;
+    }
+
+    .building {
+      min-height: 128px;
+      padding: 12px;
+      border: 1px solid rgba(245, 239, 232, 0.12);
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, rgba(232, 177, 95, 0.08), transparent 45%),
+        rgba(255, 255, 255, 0.045);
+      color: var(--text);
+      text-align: left;
+      transition: border-color 180ms ease, transform 180ms ease, background 180ms ease;
+    }
+
+    .building:hover,
+    .building:focus-visible,
+    .building.is-selected {
+      outline: 0;
+      border-color: rgba(232, 177, 95, 0.62);
+      background:
+        linear-gradient(145deg, rgba(232, 177, 95, 0.14), transparent 45%),
+        rgba(255, 255, 255, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .building-icon {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.24);
+      color: var(--gold);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 23px;
+      font-weight: 900;
+    }
+
+    .building-name {
+      display: block;
+      font-weight: 900;
+      line-height: 1.15;
+    }
+
+    .building-status {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .building-panel {
+      display: grid;
+      align-content: start;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid rgba(245, 239, 232, 0.1);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .building-panel h3 {
+      margin: 0;
+      font-size: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+      line-height: 1.1;
+    }
+
+    .building-panel p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .building-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .ghost-button {
+      min-height: 40px;
+      border: 1px solid rgba(245, 239, 232, 0.14);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .placeholder {
+      display: grid;
+      place-items: center;
+      min-height: 360px;
+      border: 1px solid rgba(245, 239, 232, 0.09);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.035);
+      color: var(--muted);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 28px;
+    }
+
+    .chat-panel {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 10px;
+      min-height: 190px;
+      padding: 12px;
+    }
+
+    .chat-title {
+      margin: 0;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .chat-log {
+      display: grid;
+      align-content: start;
+      gap: 7px;
+      min-height: 86px;
+      max-height: 150px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .chat-message {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .chat-message strong {
+      color: var(--gold);
+    }
+
+    .chat-form {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 132px;
+      gap: 8px;
+    }
+
+    @media (max-width: 980px) {
+      body.is-game .game-shell {
+        padding: 10px;
       }
 
-      h1 {
+      .top-menu,
+      .resource-line,
+      .play-layout,
+      .city-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .buildings {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-card {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 14px;
+      }
+
+      .hero-name {
+        margin-top: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .brand {
         padding: 12px;
         font-size: clamp(44px, 18vw, 76px);
         letter-spacing: 0.04em;
       }
 
-      .auth-panel {
-        padding: 18px;
+      .auth-panel,
+      .work-panel,
+      .chat-panel,
+      .hero-card {
+        padding: 12px;
+      }
+
+      .resource-line,
+      .buildings,
+      .chat-form,
+      .hero-card {
+        grid-template-columns: 1fr;
+      }
+
+      .work-head {
+        display: grid;
       }
     }
   </style>
 </head>
 <body>
   <main class="intro" id="intro">
-    <h1 id="enterGame" role="button" tabindex="0" aria-label="Открыть вход в NecroTown">NecroTown</h1>
+    <h1 class="brand" id="enterGame" role="button" tabindex="0" aria-label="Открыть вход в NecroTown">NecroTown</h1>
   </main>
 
   <section class="auth-shell" id="authShell" aria-hidden="true">
@@ -258,7 +698,7 @@
 
       <form class="auth-form is-active" id="loginForm">
         <label>
-          Логин
+          Логин или email
           <input name="login" autocomplete="username" required />
         </label>
         <label>
@@ -271,7 +711,7 @@
       <form class="auth-form" id="registerForm">
         <label>
           Логин
-          <input name="login" autocomplete="username" required />
+          <input name="username" autocomplete="username" required />
         </label>
         <label>
           Email
@@ -279,28 +719,283 @@
         </label>
         <label>
           Пароль
-          <input name="password" type="password" autocomplete="new-password" required />
+          <input name="password" type="password" autocomplete="new-password" minlength="6" required />
         </label>
         <button class="submit" type="submit">Создать героя</button>
       </form>
+
+      <div class="message" id="authMessage" role="status" aria-live="polite"></div>
     </div>
+  </section>
+
+  <section class="game-shell" id="gameShell" aria-hidden="true">
+    <nav class="top-menu" aria-label="Основное меню">
+      <button class="menu-button is-active" type="button" data-view="city">Город</button>
+      <button class="menu-button" type="button" data-view="buildings">Постройки</button>
+      <button class="menu-button" type="button" data-view="research">Изучение</button>
+      <button class="menu-button" type="button" data-view="army">Армия</button>
+      <button class="menu-button" type="button" data-view="profile">Профиль</button>
+      <button class="logout" id="logoutButton" type="button">Выход</button>
+    </nav>
+
+    <div class="resource-line" id="resourceLine" aria-label="Ресурсы"></div>
+
+    <div class="play-layout">
+      <aside class="hero-card" aria-label="Герой">
+        <div class="avatar" id="heroAvatar" aria-hidden="true"></div>
+        <div>
+          <h2 class="hero-name" id="heroName">Герой</h2>
+          <p class="hero-class">Некромант</p>
+          <dl class="stat-list" id="heroStats"></dl>
+        </div>
+      </aside>
+
+      <main class="work-panel" id="workPanel"></main>
+    </div>
+
+    <section class="chat-panel" aria-label="Чат">
+      <h2 class="chat-title">Чат города</h2>
+      <div class="chat-log" id="chatLog"></div>
+      <form class="chat-form" id="chatForm">
+        <input name="message" maxlength="300" autocomplete="off" placeholder="Сообщение" required />
+        <button class="chat-send" type="submit">Отправить</button>
+      </form>
+    </section>
   </section>
 
   <script>
     const intro = document.getElementById("intro");
     const enterGame = document.getElementById("enterGame");
     const authShell = document.getElementById("authShell");
+    const authMessage = document.getElementById("authMessage");
     const tabs = document.querySelectorAll(".tab");
-    const forms = {
+    const authForms = {
       login: document.getElementById("loginForm"),
       register: document.getElementById("registerForm")
     };
+    const gameShell = document.getElementById("gameShell");
+    const resourceLine = document.getElementById("resourceLine");
+    const heroName = document.getElementById("heroName");
+    const heroStats = document.getElementById("heroStats");
+    const workPanel = document.getElementById("workPanel");
+    const chatLog = document.getElementById("chatLog");
+    const chatForm = document.getElementById("chatForm");
+    const logoutButton = document.getElementById("logoutButton");
+    const menuButtons = document.querySelectorAll(".menu-button");
+
+    const resources = [
+      ["bones", "Кости", "icon-bones"],
+      ["souls", "Души", "icon-souls"],
+      ["iron", "Железо", "icon-iron"],
+      ["ether", "Эфир", "icon-ether"],
+      ["plague", "Мор", "icon-plague"]
+    ];
+
+    const viewTitles = {
+      city: "Город",
+      buildings: "Постройки",
+      research: "Изучение",
+      army: "Армия",
+      profile: "Профиль"
+    };
+
+    const buildingLetters = {
+      crypt: "C",
+      forge: "F",
+      academy: "A",
+      barracks: "B",
+      market: "M",
+      wall: "W"
+    };
+
+    let state = null;
+    let activeView = "city";
+    let selectedBuildingId = null;
+    let chatTimer = null;
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        "\"": "&quot;",
+        "'": "&#039;"
+      })[char]);
+    }
 
     function showAuth() {
       intro.classList.add("is-hidden");
       authShell.classList.add("is-visible");
       authShell.setAttribute("aria-hidden", "false");
-      window.setTimeout(() => forms.login.querySelector("input").focus(), 520);
+      window.setTimeout(() => authForms.login.querySelector("input").focus(), 520);
+    }
+
+    function setAuthMessage(text) {
+      authMessage.textContent = text || "";
+    }
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          ...(options.headers || {})
+        },
+        ...options
+      });
+      const data = await response.json().catch(() => ({ ok: false, error: "Сервер вернул некорректный ответ." }));
+
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error || "Запрос не выполнен.");
+      }
+
+      return data;
+    }
+
+    function formData(form) {
+      return Object.fromEntries(new FormData(form).entries());
+    }
+
+    function selectAuthTab(mode) {
+      tabs.forEach((item) => {
+        const isActive = item.dataset.tab === mode;
+        item.classList.toggle("is-active", isActive);
+        item.setAttribute("aria-selected", String(isActive));
+      });
+
+      Object.entries(authForms).forEach(([name, form]) => {
+        form.classList.toggle("is-active", name === mode);
+      });
+
+      setAuthMessage("");
+      authForms[mode].querySelector("input").focus();
+    }
+
+    function renderResources() {
+      resourceLine.innerHTML = resources.map(([key, label, icon]) => `
+        <div class="resource">
+          <span class="resource-icon ${icon}" aria-hidden="true"></span>
+          <span>
+            <span class="resource-name">${label}</span>
+            <strong class="resource-value">${state.resources[key] ?? 0}</strong>
+          </span>
+        </div>
+      `).join("");
+    }
+
+    function renderHero() {
+      const hero = state.hero;
+      heroName.textContent = hero.name;
+      heroStats.innerHTML = [
+        ["Уровень", hero.level],
+        ["Опыт", hero.experience],
+        ["Здоровье", hero.health],
+        ["Атака", hero.attack],
+        ["Защита", hero.defense],
+        ["Энергия", hero.energy]
+      ].map(([name, value]) => `
+        <div class="stat-row">
+          <dt>${name}</dt>
+          <dd><strong>${value}</strong></dd>
+        </div>
+      `).join("");
+    }
+
+    function selectedBuilding() {
+      return state.buildings.find((building) => building.id === selectedBuildingId) || state.buildings[0];
+    }
+
+    function renderCity() {
+      const building = selectedBuilding();
+      selectedBuildingId = building?.id ?? null;
+
+      workPanel.innerHTML = `
+        <div class="work-head">
+          <h2 class="work-title">${viewTitles[activeView]}</h2>
+          <span class="work-meta">Некрорайон: Северный погост</span>
+        </div>
+        <div class="city-grid">
+          <div class="buildings">
+            ${state.buildings.map((item) => `
+              <button class="building ${item.id === selectedBuildingId ? "is-selected" : ""}" type="button" data-building-id="${item.id}">
+                <span class="building-icon">${buildingLetters[item.type] || "N"}</span>
+                <span class="building-name">${escapeHtml(item.name)}</span>
+                <span class="building-status">Ур. ${item.level} · ${escapeHtml(item.status)}</span>
+              </button>
+            `).join("")}
+          </div>
+          <aside class="building-panel">
+            <h3>${escapeHtml(building.name)}</h3>
+            <p>${escapeHtml(building.description)}</p>
+            <div class="stat-row"><span>Уровень</span><strong>${building.level}</strong></div>
+            <div class="stat-row"><span>Статус</span><strong>${escapeHtml(building.status)}</strong></div>
+            <div class="building-actions">
+              <button class="ghost-button" type="button">Улучшить</button>
+              <button class="ghost-button" type="button">Открыть</button>
+            </div>
+          </aside>
+        </div>
+      `;
+
+      workPanel.querySelectorAll("[data-building-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedBuildingId = Number(button.dataset.buildingId);
+          renderCity();
+        });
+      });
+    }
+
+    function renderPlaceholder() {
+      workPanel.innerHTML = `
+        <div class="work-head">
+          <h2 class="work-title">${viewTitles[activeView]}</h2>
+          <span class="work-meta">NecroTown</span>
+        </div>
+        <div class="placeholder">${viewTitles[activeView]}</div>
+      `;
+    }
+
+    function renderWork() {
+      if (activeView === "city" || activeView === "buildings") {
+        renderCity();
+      } else {
+        renderPlaceholder();
+      }
+    }
+
+    function renderGame() {
+      renderResources();
+      renderHero();
+      renderWork();
+    }
+
+    async function loadChat() {
+      if (!state) {
+        return;
+      }
+
+      try {
+        const data = await api("/api/chat.php");
+        chatLog.innerHTML = data.messages.map((message) => `
+          <div class="chat-message">
+            <strong>${escapeHtml(message.username)}</strong>: ${escapeHtml(message.message)}
+          </div>
+        `).join("");
+        chatLog.scrollTop = chatLog.scrollHeight;
+      } catch (error) {
+        chatLog.innerHTML = `<div class="chat-message">${error.message}</div>`;
+      }
+    }
+
+    function showGame(nextState) {
+      state = nextState;
+      document.body.classList.add("is-game");
+      gameShell.setAttribute("aria-hidden", "false");
+      authShell.setAttribute("aria-hidden", "true");
+      renderGame();
+      loadChat();
+      clearInterval(chatTimer);
+      chatTimer = setInterval(loadChat, 5000);
     }
 
     enterGame.addEventListener("click", showAuth);
@@ -312,28 +1007,76 @@
     });
 
     tabs.forEach((tab) => {
-      tab.addEventListener("click", () => {
-        const mode = tab.dataset.tab;
+      tab.addEventListener("click", () => selectAuthTab(tab.dataset.tab));
+    });
 
-        tabs.forEach((item) => {
-          const isActive = item === tab;
-          item.classList.toggle("is-active", isActive);
-          item.setAttribute("aria-selected", String(isActive));
+    authForms.login.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setAuthMessage("Входим...");
+
+      try {
+        const data = await api("/api/auth.php?action=login", {
+          method: "POST",
+          body: JSON.stringify(formData(authForms.login))
         });
+        showGame(data.state);
+      } catch (error) {
+        setAuthMessage(error.message);
+      }
+    });
 
-        Object.entries(forms).forEach(([name, form]) => {
-          form.classList.toggle("is-active", name === mode);
+    authForms.register.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      setAuthMessage("Создаём героя...");
+
+      try {
+        const data = await api("/api/auth.php?action=register", {
+          method: "POST",
+          body: JSON.stringify(formData(authForms.register))
         });
+        showGame(data.state);
+      } catch (error) {
+        setAuthMessage(error.message);
+      }
+    });
 
-        forms[mode].querySelector("input").focus();
+    menuButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        activeView = button.dataset.view;
+        menuButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+        renderWork();
       });
     });
 
-    Object.values(forms).forEach((form) => {
-      form.addEventListener("submit", (event) => {
-        event.preventDefault();
+    chatForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const input = chatForm.elements.message;
+      const message = input.value.trim();
+      if (!message) {
+        return;
+      }
+
+      input.value = "";
+      await api("/api/chat.php", {
+        method: "POST",
+        body: JSON.stringify({ message })
       });
+      await loadChat();
     });
+
+    logoutButton.addEventListener("click", async () => {
+      await api("/api/auth.php?action=logout", { method: "POST", body: "{}" });
+      clearInterval(chatTimer);
+      window.location.reload();
+    });
+
+    api("/api/auth.php?action=me")
+      .then((data) => {
+        if (data.authenticated) {
+          showGame(data.state);
+        }
+      })
+      .catch(() => {});
   </script>
 </body>
 </html>
