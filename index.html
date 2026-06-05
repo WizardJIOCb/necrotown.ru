@@ -49,7 +49,8 @@
     }
 
     button,
-    input {
+    input,
+    select {
       font: inherit;
     }
 
@@ -192,7 +193,8 @@
       text-transform: uppercase;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       min-height: 46px;
       border: 1px solid rgba(245, 239, 232, 0.15);
@@ -204,7 +206,8 @@
       transition: border-color 180ms ease, box-shadow 180ms ease;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       border-color: rgba(232, 177, 95, 0.74);
       box-shadow: 0 0 0 3px rgba(232, 177, 95, 0.12);
     }
@@ -275,7 +278,7 @@
     }
 
     .top-menu {
-      grid-template-columns: repeat(6, minmax(104px, 1fr)) auto;
+      grid-template-columns: repeat(7, minmax(104px, 1fr)) auto;
       align-items: center;
     }
 
@@ -671,6 +674,292 @@
       line-height: 1.45;
     }
 
+    .houses-layout {
+      display: grid;
+      grid-template-columns: 244px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 390px;
+    }
+
+    .house-list {
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(245, 239, 232, 0.1);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.18);
+    }
+
+    .house-button {
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      align-items: center;
+      gap: 10px;
+      min-height: 64px;
+      border: 1px solid rgba(245, 239, 232, 0.1);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text);
+      text-align: left;
+      transition: border-color 180ms ease, background 180ms ease, transform 180ms ease;
+    }
+
+    .house-button:hover,
+    .house-button:focus-visible,
+    .house-button.is-selected {
+      outline: 0;
+      border-color: color-mix(in srgb, var(--house-color), #fff 24%);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--house-color), transparent 78%), rgba(255, 255, 255, 0.045));
+      transform: translateY(-1px);
+    }
+
+    .house-emblem {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: linear-gradient(145deg, color-mix(in srgb, var(--house-color), #000 34%), rgba(255, 255, 255, 0.06));
+      color: #fffaf4;
+      font-family: Georgia, "Times New Roman", serif;
+      font-weight: 900;
+      box-shadow: 0 0 18px color-mix(in srgb, var(--house-color), transparent 62%);
+    }
+
+    .house-button-title,
+    .house-section-title,
+    .junior-name,
+    .upgrade-name {
+      font-weight: 900;
+    }
+
+    .house-button-meta {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .house-details {
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .house-summary {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid rgba(245, 239, 232, 0.1);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--house-color), transparent 83%), transparent 52%),
+        rgba(0, 0, 0, 0.2);
+    }
+
+    .house-kicker {
+      margin: 0 0 6px;
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .house-name {
+      margin: 0 0 8px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 32px;
+      line-height: 1;
+    }
+
+    .house-description {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .house-progress {
+      display: grid;
+      gap: 8px;
+      align-content: center;
+    }
+
+    .progress-track {
+      overflow: hidden;
+      height: 12px;
+      border: 1px solid rgba(245, 239, 232, 0.12);
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.32);
+    }
+
+    .progress-fill {
+      width: var(--progress);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--house-color), var(--gold));
+    }
+
+    .house-content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 12px;
+    }
+
+    .house-stack,
+    .patriarch-card,
+    .house-side-panel,
+    .junior-card,
+    .upgrade-card {
+      border: 1px solid rgba(245, 239, 232, 0.1);
+      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .house-stack,
+    .house-side-panel {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      padding: 12px;
+    }
+
+    .patriarch-card {
+      display: grid;
+      grid-template-columns: 86px minmax(0, 1fr);
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .patriarch-portrait,
+    .junior-portrait {
+      border: 1px solid rgba(245, 239, 232, 0.12);
+      border-radius: 8px;
+      background:
+        radial-gradient(circle at 50% 32%, rgba(255, 250, 244, 0.28) 0 13%, transparent 14%),
+        radial-gradient(circle at 39% 31%, var(--gold) 0 3%, transparent 4%),
+        radial-gradient(circle at 61% 31%, var(--gold) 0 3%, transparent 4%),
+        linear-gradient(145deg, color-mix(in srgb, var(--house-color), transparent 34%), rgba(125, 168, 217, 0.13)),
+        #161112;
+      box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.48);
+    }
+
+    .patriarch-portrait {
+      width: 86px;
+      height: 100px;
+    }
+
+    .patriarch-card h3,
+    .house-section-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 23px;
+      line-height: 1.1;
+    }
+
+    .pill-row,
+    .bonus-list,
+    .poi-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .pill {
+      display: inline-flex;
+      min-height: 28px;
+      align-items: center;
+      padding: 5px 9px;
+      border: 1px solid rgba(245, 239, 232, 0.12);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .bonus-chip {
+      border-color: color-mix(in srgb, var(--house-color), transparent 58%);
+      color: #fffaf4;
+    }
+
+    .junior-grid,
+    .upgrade-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .junior-card,
+    .upgrade-card {
+      display: grid;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .junior-head {
+      display: grid;
+      grid-template-columns: 48px 1fr;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .junior-portrait {
+      width: 48px;
+      height: 48px;
+    }
+
+    .junior-meta,
+    .upgrade-meta,
+    .house-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .health-track {
+      overflow: hidden;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.34);
+    }
+
+    .health-fill {
+      width: var(--health);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--green), var(--gold));
+    }
+
+    .upgrade-card.is-maxed {
+      border-color: rgba(117, 182, 108, 0.38);
+    }
+
+    .upgrade-action {
+      min-height: 36px;
+      border: 1px solid rgba(245, 239, 232, 0.14);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.045);
+      color: var(--text);
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+
+    .upgrade-action:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+    }
+
+    .danger-action {
+      border-color: rgba(210, 75, 67, 0.3);
+      color: #ffd9d4;
+    }
+
     .biome-chip {
       display: inline-flex;
       width: fit-content;
@@ -791,11 +1080,16 @@
       .resource-line,
       .play-layout,
       .city-grid,
-      .map-layout {
+      .map-layout,
+      .houses-layout,
+      .house-summary,
+      .house-content-grid {
         grid-template-columns: 1fr;
       }
 
-      .buildings {
+      .buildings,
+      .junior-grid,
+      .upgrade-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
@@ -826,8 +1120,11 @@
 
       .resource-line,
       .buildings,
+      .junior-grid,
+      .upgrade-grid,
       .chat-form,
-      .hero-card {
+      .hero-card,
+      .patriarch-card {
         grid-template-columns: 1fr;
       }
 
@@ -892,6 +1189,7 @@
       <button class="menu-button is-active" type="button" data-view="city">Город</button>
       <button class="menu-button" type="button" data-view="buildings">Постройки</button>
       <button class="menu-button" type="button" data-view="map">Карта</button>
+      <button class="menu-button" type="button" data-view="houses">Дома</button>
       <button class="menu-button" type="button" data-view="research">Изучение</button>
       <button class="menu-button" type="button" data-view="army">Армия</button>
       <button class="menu-button" type="button" data-view="profile">Профиль</button>
@@ -955,6 +1253,7 @@
       city: "Город",
       buildings: "Постройки",
       map: "Карта",
+      houses: "Дома Вампиров",
       research: "Изучение",
       army: "Армия",
       profile: "Профиль"
@@ -1031,10 +1330,247 @@
       ["ice", "ice", "blood", "ruins", "ruins", "forest", "forest", "bones"]
     ];
 
+    const juniorTasks = {
+      IDLE: "Свободен",
+      EXPLORE: "Исследует мир",
+      CLEAR_POI: "Зачищает POI",
+      RESEARCH: "Научное поручение",
+      TRADE_MISSION: "Торговая миссия",
+      NECROMANCY_MISSION: "Некромантия",
+      ASSASSINATION: "Устранение цели"
+    };
+
+    const resourceNames = Object.fromEntries(resources.map(([key, label]) => [key, label]));
+
+    const houseLevelTable = [
+      { level: 1, juniorSlots: 1, bonusMultiplier: 1, unlocks: ["Патриарх дома"] },
+      { level: 2, juniorSlots: 2, bonusMultiplier: 1.15, unlocks: ["Второй младший"] },
+      { level: 3, juniorSlots: 2, bonusMultiplier: 1.3, unlocks: ["Усиленные поручения"] },
+      { level: 4, juniorSlots: 3, bonusMultiplier: 1.5, unlocks: ["Третий младший"] },
+      { level: 5, juniorSlots: 4, bonusMultiplier: 1.75, unlocks: ["Аристократическая доктрина"] }
+    ];
+
+    const houseExperienceCurve = [0, 0, 120, 320, 620, 1000];
+
+    const vampireHouseDefinitions = [
+      {
+        id: "war",
+        houseType: "WAR",
+        name: "Дом Войны",
+        emblem: "W",
+        color: "#d24b43",
+        role: "Военная элита государства.",
+        uniqueMechanic: "Боевые экспедиции быстрее зачищают опасные точки и чаще приносят трофеи.",
+        modifiers: [
+          ["Сила младших", "+12%"],
+          ["Редкий лут", "+10%"],
+          ["Скорость POI", "+15%"],
+          ["Трофеи", "+1 бросок"]
+        ],
+        unlockedAbilities: ["Fire Nova", "Blood Spear", "Rupture Charge"],
+        discoveredPOI: ["Battlefield"],
+        upgrades: [
+          { id: "veteran_hunters", name: "Veteran Hunters", effect: "+10% loot quality", maxLevel: 3, cost: { bones: 35, iron: 18 } },
+          { id: "endless_hunt", name: "Endless Hunt", effect: "+15% expedition speed", maxLevel: 3, cost: { souls: 18, iron: 24 } },
+          { id: "blood_trophies", name: "Blood Trophies", effect: "+1 artifact reward", maxLevel: 1, cost: { souls: 45, ether: 8 } }
+        ],
+        patriarch: {
+          name: "Влад Ратобор",
+          level: 6,
+          experience: 740,
+          abilities: ["Fire Nova", "Blood Spear", "Rupture Charge"],
+          equipment: ["Клинок осады", "Панцирь охотника"],
+          bloodMutations: ["Боевая регенерация"]
+        },
+        juniors: [
+          { name: "Милена Кровавая", level: 3, currentTask: "CLEAR_POI", healthPercent: 82 },
+          { name: "Остин Седой", level: 2, currentTask: "EXPLORE", healthPercent: 68 }
+        ],
+        startingLevel: 2,
+        startingExperience: 180
+      },
+      {
+        id: "science",
+        houseType: "SCIENCE",
+        name: "Дом Науки",
+        emblem: "S",
+        color: "#7da8d9",
+        role: "Исследование технологий и магии.",
+        uniqueMechanic: "Каждый уровень повышает шанс генерации Ancient Library, Arcane Anomaly и Lost Laboratory.",
+        modifiers: [
+          ["Исследования", "+10%"],
+          ["Редкие открытия", "+5%"],
+          ["Лаборатории", "+12%"],
+          ["Качество POI", "+1 ранг"]
+        ],
+        unlockedAbilities: ["Arcane Prism", "Ether Pulse"],
+        discoveredPOI: ["Ancient Library", "Arcane Anomaly", "Lost Laboratory"],
+        upgrades: [
+          { id: "efficient_scholars", name: "Efficient Scholars", effect: "+10% research speed", maxLevel: 3, cost: { ether: 16, souls: 22 } },
+          { id: "arcane_breakthroughs", name: "Arcane Breakthroughs", effect: "+5% rare discovery chance", maxLevel: 3, cost: { ether: 24, plague: 3 } },
+          { id: "forbidden_knowledge", name: "Forbidden Knowledge", effect: "Unlock Unique Researches", maxLevel: 1, cost: { souls: 55, ether: 28 } }
+        ],
+        patriarch: {
+          name: "Себастьян Нокс",
+          level: 5,
+          experience: 510,
+          abilities: ["Arcane Prism", "Ether Pulse"],
+          equipment: ["Линза эфира"],
+          bloodMutations: ["Сверхпамять"]
+        },
+        juniors: [
+          { name: "Ида Чернильная", level: 2, currentTask: "RESEARCH", healthPercent: 91 }
+        ],
+        startingLevel: 1,
+        startingExperience: 80
+      },
+      {
+        id: "trade",
+        houseType: "TRADE",
+        name: "Дом Торговли",
+        emblem: "T",
+        color: "#e8b15f",
+        role: "Контроль караванов и рынка.",
+        uniqueMechanic: "Разгоняет экономику от редких караванов до постоянного базара.",
+        modifiers: [
+          ["Ассортимент", "+2 товара"],
+          ["Цены", "-8%"],
+          ["Прибыль", "+14%"],
+          ["Частота торговли", "+1 шаг"]
+        ],
+        unlockedAbilities: ["Golden Bargain", "Debt Mark"],
+        discoveredPOI: ["Merchant Graveyard", "Smuggler Camp"],
+        upgrades: [
+          { id: "caravan_pacts", name: "Caravan Pacts", effect: "+1 caravan offer", maxLevel: 3, cost: { bones: 28, souls: 14 } },
+          { id: "black_market", name: "Black Market", effect: "-10% rare goods price", maxLevel: 3, cost: { iron: 20, ether: 8 } },
+          { id: "permanent_bazaar", name: "Permanent Bazaar", effect: "Unlock постоянный базар", maxLevel: 1, cost: { bones: 80, souls: 35 } }
+        ],
+        patriarch: {
+          name: "Марцелл Казначей",
+          level: 4,
+          experience: 420,
+          abilities: ["Golden Bargain", "Debt Mark"],
+          equipment: ["Печатка договоров"],
+          bloodMutations: ["Чутье долга"]
+        },
+        juniors: [
+          { name: "Роксана Счётная", level: 1, currentTask: "TRADE_MISSION", healthPercent: 100 }
+        ],
+        startingLevel: 1,
+        startingExperience: 60
+      },
+      {
+        id: "necromancy",
+        houseType: "NECROMANCY",
+        name: "Дом Некромантии",
+        emblem: "N",
+        color: "#75b66c",
+        role: "Контроль нежити.",
+        uniqueMechanic: "Увеличивает лимит подконтрольной нежити и снижает риск Uncontrolled Undead Event.",
+        modifiers: [
+          ["Лимит нежити", "+18"],
+          ["Рабочие мертвецы", "+16%"],
+          ["Скорость поднятия", "+12%"],
+          ["Риск бунта", "-10%"]
+        ],
+        unlockedAbilities: ["Bone Swarm", "Soul Chain"],
+        discoveredPOI: ["Mass Grave", "Silent Ossuary"],
+        upgrades: [
+          { id: "control_sigils", name: "Control Sigils", effect: "+12 undead control", maxLevel: 3, cost: { bones: 42, ether: 10 } },
+          { id: "grave_labor", name: "Grave Labor", effect: "+15% undead workers", maxLevel: 3, cost: { bones: 50, plague: 4 } },
+          { id: "obedience_rite", name: "Obedience Rite", effect: "-20% uncontrolled event risk", maxLevel: 1, cost: { souls: 50, plague: 8 } }
+        ],
+        patriarch: {
+          name: "Морвейн Костяной",
+          level: 6,
+          experience: 690,
+          abilities: ["Bone Swarm", "Soul Chain"],
+          equipment: ["Посох повиновения"],
+          bloodMutations: ["Холодная кровь"]
+        },
+        juniors: [
+          { name: "Тарас Праховый", level: 2, currentTask: "NECROMANCY_MISSION", healthPercent: 74 }
+        ],
+        startingLevel: 2,
+        startingExperience: 220
+      },
+      {
+        id: "blood",
+        houseType: "BLOOD",
+        name: "Дом Крови",
+        emblem: "B",
+        color: "#9a3f45",
+        role: "Развитие вампирской крови.",
+        uniqueMechanic: "Открывает кровавые эволюции, мутации и редкие генетические линии.",
+        modifiers: [
+          ["Новые мутации", "+1 линия"],
+          ["Патриархи", "+10% мощь"],
+          ["Младшие", "+8% живучесть"],
+          ["Кровные линии", "+5% редкость"]
+        ],
+        unlockedAbilities: ["Blood Spear", "Crimson Aegis", "Hemorrhage"],
+        discoveredPOI: ["Blood Spring", "Genealogist Vault"],
+        upgrades: [
+          { id: "deep_lineage", name: "Deep Lineage", effect: "+1 mutation option", maxLevel: 3, cost: { souls: 26, plague: 3 } },
+          { id: "crimson_training", name: "Crimson Training", effect: "+10% patriarch power", maxLevel: 3, cost: { bones: 36, souls: 22 } },
+          { id: "ancient_blood", name: "Ancient Blood", effect: "Unlock rare bloodlines", maxLevel: 1, cost: { souls: 70, ether: 18 } }
+        ],
+        patriarch: {
+          name: "Элиана Алая",
+          level: 5,
+          experience: 560,
+          abilities: ["Blood Spear", "Crimson Aegis", "Hemorrhage"],
+          equipment: ["Чаша родословной"],
+          bloodMutations: ["Алый панцирь", "Скорость вен"]
+        },
+        juniors: [
+          { name: "Герда Жила", level: 2, currentTask: "IDLE", healthPercent: 88 }
+        ],
+        startingLevel: 1,
+        startingExperience: 90
+      },
+      {
+        id: "shadow",
+        houseType: "SHADOW",
+        name: "Дом Теней",
+        emblem: "H",
+        color: "#6e6a92",
+        role: "Разведка и тайные операции.",
+        uniqueMechanic: "Находит POI, вскрывает угрозы, устраняет цели и разведывает территории.",
+        modifiers: [
+          ["Поиск POI", "+16%"],
+          ["Угрозы", "+12% обнаружение"],
+          ["Убийства целей", "+10%"],
+          ["Разведка", "+1 сектор"]
+        ],
+        unlockedAbilities: ["Shadow Dash", "Night Veil"],
+        discoveredPOI: ["Hidden Shrine", "Assassin Den"],
+        upgrades: [
+          { id: "silent_scouts", name: "Silent Scouts", effect: "+15% POI search", maxLevel: 3, cost: { souls: 18, ether: 10 } },
+          { id: "knife_contracts", name: "Knife Contracts", effect: "+12% assassination success", maxLevel: 3, cost: { iron: 18, plague: 3 } },
+          { id: "night_network", name: "Night Network", effect: "Reveal hidden threats", maxLevel: 1, cost: { souls: 48, ether: 20 } }
+        ],
+        patriarch: {
+          name: "Никс Безликая",
+          level: 5,
+          experience: 500,
+          abilities: ["Shadow Dash", "Night Veil"],
+          equipment: ["Плащ без луны"],
+          bloodMutations: ["Бесшумное сердце"]
+        },
+        juniors: [
+          { name: "Леон Тихий", level: 2, currentTask: "ASSASSINATION", healthPercent: 77 }
+        ],
+        startingLevel: 1,
+        startingExperience: 75
+      }
+    ];
+
     let state = null;
     let activeView = "city";
     let selectedBuildingId = null;
     let selectedHexId = "H-4-3";
+    let selectedHouseId = "war";
     let chatTimer = null;
 
     function escapeHtml(value) {
@@ -1248,6 +1784,373 @@
       });
     }
 
+    function cloneCost(cost) {
+      return Object.fromEntries(Object.entries(cost).map(([resource, value]) => [resource, Number(value)]));
+    }
+
+    function formatCost(cost) {
+      return Object.entries(cost)
+        .map(([resource, value]) => `${resourceNames[resource] || resource}: ${value}`)
+        .join(" · ");
+    }
+
+    function hasResources(cost) {
+      return Object.entries(cost).every(([resource, value]) => (state.resources[resource] ?? 0) >= value);
+    }
+
+    function spendResources(cost) {
+      if (!hasResources(cost)) {
+        return false;
+      }
+
+      Object.entries(cost).forEach(([resource, value]) => {
+        state.resources[resource] = Math.max(0, (state.resources[resource] ?? 0) - value);
+      });
+
+      renderResources();
+      return true;
+    }
+
+    function levelInfo(level) {
+      return houseLevelTable[Math.min(level, houseLevelTable.length) - 1] || houseLevelTable[0];
+    }
+
+    function experienceProgress(house) {
+      const currentLevelStart = houseExperienceCurve[house.level] ?? 0;
+      const nextLevelExperience = houseExperienceCurve[house.level + 1] ?? currentLevelStart;
+      if (nextLevelExperience <= currentLevelStart) {
+        return 100;
+      }
+
+      return Math.max(0, Math.min(100, Math.round(((house.experience - currentLevelStart) / (nextLevelExperience - currentLevelStart)) * 100)));
+    }
+
+    function grantHouseExperience(house, amount) {
+      house.experience += amount;
+      while (house.level < houseLevelTable.length && house.experience >= houseExperienceCurve[house.level + 1]) {
+        house.level += 1;
+        house.juniorSlots = levelInfo(house.level).juniorSlots;
+      }
+    }
+
+    function ensureVampireHouses() {
+      if (state.vampireHouses && state.patriarchs && state.juniorVampires) {
+        return;
+      }
+
+      const patriarchs = {};
+      const juniorVampires = {};
+
+      state.population = state.population || {
+        total: 64,
+        available: 42
+      };
+
+      state.vampireHouses = vampireHouseDefinitions.map((definition) => {
+        const patriarchId = `${definition.id}-patriarch`;
+        patriarchs[patriarchId] = {
+          id: patriarchId,
+          ...definition.patriarch,
+          houseId: definition.id
+        };
+
+        const juniorIds = definition.juniors.map((junior, index) => {
+          const juniorId = `${definition.id}-junior-${index + 1}`;
+          juniorVampires[juniorId] = {
+            id: juniorId,
+            portrait: definition.emblem,
+            ...junior,
+            houseId: definition.id
+          };
+          return juniorId;
+        });
+
+        const levelData = levelInfo(definition.startingLevel);
+
+        return {
+          id: definition.id,
+          name: definition.name,
+          level: definition.startingLevel,
+          experience: definition.startingExperience,
+          patriarchId,
+          juniorSlots: levelData.juniorSlots,
+          juniorIds,
+          upgrades: definition.upgrades.map((upgrade) => ({
+            id: upgrade.id,
+            name: upgrade.name,
+            effect: upgrade.effect,
+            level: 0,
+            maxLevel: upgrade.maxLevel,
+            cost: cloneCost(upgrade.cost)
+          })),
+          modifiers: definition.modifiers.map(([name, value]) => ({ name, value })),
+          unlockedAbilities: [...definition.unlockedAbilities],
+          discoveredPOI: [...definition.discoveredPOI],
+          houseType: definition.houseType
+        };
+      });
+
+      state.patriarchs = patriarchs;
+      state.juniorVampires = juniorVampires;
+    }
+
+    function houseDefinition(houseId) {
+      return vampireHouseDefinitions.find((definition) => definition.id === houseId) || vampireHouseDefinitions[0];
+    }
+
+    function selectedHouse() {
+      ensureVampireHouses();
+      return state.vampireHouses.find((house) => house.id === selectedHouseId) || state.vampireHouses[0];
+    }
+
+    function currentUpgradeCost(upgrade) {
+      const multiplier = upgrade.level + 1;
+      return Object.fromEntries(Object.entries(upgrade.cost).map(([resource, value]) => [resource, value * multiplier]));
+    }
+
+    function createJuniorCost(house) {
+      return {
+        souls: 10 + house.level * 4,
+        plague: 1 + Math.floor(house.level / 2)
+      };
+    }
+
+    function renderHouses() {
+      ensureVampireHouses();
+
+      const house = selectedHouse();
+      const definition = houseDefinition(house.id);
+      selectedHouseId = house.id;
+
+      const patriarch = state.patriarchs[house.patriarchId];
+      const juniors = house.juniorIds.map((juniorId) => state.juniorVampires[juniorId]).filter(Boolean);
+      const progress = experienceProgress(house);
+      const levelData = levelInfo(house.level);
+      const convertCost = createJuniorCost(house);
+      const canCreateJunior = juniors.length < house.juniorSlots && state.population.available > 0 && hasResources(convertCost);
+
+      workPanel.innerHTML = `
+        <div class="work-head">
+          <h2 class="work-title">${viewTitles[activeView]}</h2>
+          <span class="work-meta">Элита империи · ${state.vampireHouses.length} домов</span>
+        </div>
+        <div class="houses-layout" style="--house-color: ${definition.color}">
+          <aside class="house-list" aria-label="Список домов вампиров">
+            ${state.vampireHouses.map((item) => {
+              const itemDefinition = houseDefinition(item.id);
+              return `
+                <button
+                  class="house-button ${item.id === selectedHouseId ? "is-selected" : ""}"
+                  type="button"
+                  data-house-id="${item.id}"
+                  style="--house-color: ${itemDefinition.color}"
+                >
+                  <span class="house-emblem" aria-hidden="true">${escapeHtml(itemDefinition.emblem)}</span>
+                  <span>
+                    <span class="house-button-title">${escapeHtml(item.name)}</span>
+                    <span class="house-button-meta">Ур. ${item.level} · ${item.juniorIds.length}/${item.juniorSlots}</span>
+                  </span>
+                </button>
+              `;
+            }).join("")}
+          </aside>
+
+          <section class="house-details">
+            <div class="house-summary">
+              <div>
+                <p class="house-kicker">${escapeHtml(house.houseType)}</p>
+                <h3 class="house-name">${escapeHtml(house.name)}</h3>
+                <p class="house-description">${escapeHtml(definition.role)} ${escapeHtml(definition.uniqueMechanic)}</p>
+              </div>
+              <div class="house-progress">
+                <div class="stat-row"><span>Уровень дома</span><strong>${house.level}</strong></div>
+                <div class="stat-row"><span>Множитель бонусов</span><strong>x${levelData.bonusMultiplier.toFixed(2)}</strong></div>
+                <div class="progress-track" aria-label="Прогресс дома">
+                  <div class="progress-fill" style="--progress: ${progress}%"></div>
+                </div>
+                <span class="house-note">${progress}% до следующего уровня</span>
+              </div>
+            </div>
+
+            <div class="house-content-grid">
+              <div class="house-stack">
+                <article class="patriarch-card">
+                  <div class="patriarch-portrait" aria-hidden="true"></div>
+                  <div>
+                    <p class="house-kicker">Патриарх</p>
+                    <h3>${escapeHtml(patriarch.name)}</h3>
+                    <div class="stat-row"><span>Уровень</span><strong>${patriarch.level}</strong></div>
+                    <div class="stat-row"><span>Опыт</span><strong>${patriarch.experience}</strong></div>
+                    <div class="pill-row">
+                      ${patriarch.abilities.map((ability) => `<span class="pill">${escapeHtml(ability)}</span>`).join("")}
+                    </div>
+                    <p class="house-note">Снаряжение: ${patriarch.equipment.map(escapeHtml).join(" · ")}</p>
+                    <p class="house-note">Мутации: ${patriarch.bloodMutations.map(escapeHtml).join(" · ")}</p>
+                    <p class="house-note">One Man Army: патриарх защищает поселение и участвует в битвах без отряда.</p>
+                  </div>
+                </article>
+
+                <div>
+                  <h3 class="house-section-title">Младшие вампиры</h3>
+                  <p class="house-note">Слоты: ${juniors.length}/${house.juniorSlots} · Население: ${state.population.available}/${state.population.total}</p>
+                </div>
+                <div class="junior-grid">
+                  ${juniors.map((junior) => `
+                    <article class="junior-card">
+                      <div class="junior-head">
+                        <div class="junior-portrait" aria-hidden="true"></div>
+                        <div>
+                          <div class="junior-name">${escapeHtml(junior.name)}</div>
+                          <div class="junior-meta">Ур. ${junior.level} · ${escapeHtml(juniorTasks[junior.currentTask] || junior.currentTask)}</div>
+                        </div>
+                      </div>
+                      <div class="health-track" aria-label="Здоровье ${escapeHtml(junior.name)}">
+                        <div class="health-fill" style="--health: ${junior.healthPercent}%"></div>
+                      </div>
+                      <select data-junior-task="${junior.id}" aria-label="Задача младшего ${escapeHtml(junior.name)}">
+                        ${Object.entries(juniorTasks).map(([task, label]) => `
+                          <option value="${task}" ${junior.currentTask === task ? "selected" : ""}>${escapeHtml(label)}</option>
+                        `).join("")}
+                      </select>
+                      <button class="upgrade-action danger-action" type="button" data-remove-junior="${junior.id}">Зафиксировать гибель</button>
+                    </article>
+                  `).join("")}
+                  ${juniors.length < house.juniorSlots ? `
+                    <article class="junior-card">
+                      <div class="junior-name">Свободный слот</div>
+                      <p class="junior-meta">Обращение удалит одного человека из населения и создаст смертного агента дома.</p>
+                      <button class="upgrade-action" type="button" data-create-junior="${house.id}" ${canCreateJunior ? "" : "disabled"}>
+                        Обратить · ${formatCost(convertCost)}
+                      </button>
+                    </article>
+                  ` : ""}
+                </div>
+
+                <div>
+                  <h3 class="house-section-title">Улучшения дома</h3>
+                </div>
+                <div class="upgrade-grid">
+                  ${house.upgrades.map((upgrade) => {
+                    const isMaxed = upgrade.level >= upgrade.maxLevel;
+                    const cost = currentUpgradeCost(upgrade);
+                    const canUpgrade = !isMaxed && hasResources(cost);
+                    return `
+                      <article class="upgrade-card ${isMaxed ? "is-maxed" : ""}">
+                        <div class="upgrade-name">${escapeHtml(upgrade.name)}</div>
+                        <div class="upgrade-meta">Ур. ${upgrade.level}/${upgrade.maxLevel} · ${escapeHtml(upgrade.effect)}</div>
+                        <button class="upgrade-action" type="button" data-upgrade-id="${upgrade.id}" ${canUpgrade ? "" : "disabled"}>
+                          ${isMaxed ? "Завершено" : `Улучшить · ${formatCost(cost)}`}
+                        </button>
+                      </article>
+                    `;
+                  }).join("")}
+                </div>
+              </div>
+
+              <aside class="house-side-panel">
+                <h3 class="house-section-title">Бонусы</h3>
+                <div class="bonus-list">
+                  ${house.modifiers.map((modifier) => `
+                    <span class="pill bonus-chip">${escapeHtml(modifier.name)} ${escapeHtml(modifier.value)}</span>
+                  `).join("")}
+                </div>
+
+                <h3 class="house-section-title">Коллекция способностей</h3>
+                <div class="pill-row">
+                  ${house.unlockedAbilities.map((ability) => `<span class="pill">${escapeHtml(ability)}</span>`).join("")}
+                </div>
+
+                <h3 class="house-section-title">Уникальные POI</h3>
+                <div class="poi-list">
+                  ${house.discoveredPOI.map((poi) => `<span class="pill">${escapeHtml(poi)}</span>`).join("")}
+                </div>
+
+                <h3 class="house-section-title">Открытия уровня</h3>
+                <div class="pill-row">
+                  ${levelData.unlocks.map((unlock) => `<span class="pill">${escapeHtml(unlock)}</span>`).join("")}
+                </div>
+              </aside>
+            </div>
+          </section>
+        </div>
+      `;
+
+      workPanel.querySelectorAll("[data-house-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          selectedHouseId = button.dataset.houseId;
+          renderHouses();
+        });
+      });
+
+      workPanel.querySelectorAll("[data-upgrade-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const upgrade = house.upgrades.find((item) => item.id === button.dataset.upgradeId);
+          if (!upgrade || upgrade.level >= upgrade.maxLevel) {
+            return;
+          }
+
+          const cost = currentUpgradeCost(upgrade);
+          if (!spendResources(cost)) {
+            renderHouses();
+            return;
+          }
+
+          upgrade.level += 1;
+          grantHouseExperience(house, 70 + upgrade.level * 25);
+          renderHouses();
+        });
+      });
+
+      workPanel.querySelectorAll("[data-create-junior]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const currentHouse = selectedHouse();
+          const cost = createJuniorCost(currentHouse);
+          if (currentHouse.juniorIds.length >= currentHouse.juniorSlots || state.population.available <= 0 || !spendResources(cost)) {
+            renderHouses();
+            return;
+          }
+
+          state.population.available -= 1;
+          const juniorId = `${currentHouse.id}-junior-${Date.now()}`;
+          const nextNumber = currentHouse.juniorIds.length + 1;
+          state.juniorVampires[juniorId] = {
+            id: juniorId,
+            portrait: definition.emblem,
+            name: `Обращенный ${nextNumber}`,
+            level: 1,
+            currentTask: "IDLE",
+            healthPercent: 100,
+            houseId: currentHouse.id
+          };
+          currentHouse.juniorIds.push(juniorId);
+          grantHouseExperience(currentHouse, 35);
+          renderHouses();
+        });
+      });
+
+      workPanel.querySelectorAll("[data-remove-junior]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const juniorId = button.dataset.removeJunior;
+          const currentHouse = selectedHouse();
+          currentHouse.juniorIds = currentHouse.juniorIds.filter((id) => id !== juniorId);
+          delete state.juniorVampires[juniorId];
+          renderHouses();
+        });
+      });
+
+      workPanel.querySelectorAll("[data-junior-task]").forEach((select) => {
+        select.addEventListener("change", () => {
+          const junior = state.juniorVampires[select.dataset.juniorTask];
+          if (!junior) {
+            return;
+          }
+
+          junior.currentTask = select.value;
+          renderHouses();
+        });
+      });
+    }
+
     function renderPlaceholder() {
       workPanel.innerHTML = `
         <div class="work-head">
@@ -1263,6 +2166,8 @@
         renderCity();
       } else if (activeView === "map") {
         renderMap();
+      } else if (activeView === "houses") {
+        renderHouses();
       } else {
         renderPlaceholder();
       }
