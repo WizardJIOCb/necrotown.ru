@@ -96,7 +96,7 @@ function armyPage() {
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
-  if(!fieldPromise)fieldPromise=import('./field.js?v=focus1').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
+  if(!fieldPromise)fieldPromise=import('./field.js?v=far-focus2').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
     $('fallback').hidden=false;return null;
   });
   field=await fieldPromise;
@@ -162,6 +162,11 @@ function selectMap(id,scroll=false) {
 }
 let animating=false;
 let audio;
+function setSoundEnabled(enabled) {
+  const button = $('audio');
+  button.setAttribute('aria-pressed', String(enabled));
+  button.textContent = enabled ? 'Звук вкл.' : 'Звук выкл.';
+}
 function playSound(card) {
   if(!audio||$('audio').getAttribute('aria-pressed')!=='true')return;
   const osc=audio.createOscillator(), gain=audio.createGain(), now=audio.currentTime;
@@ -178,13 +183,14 @@ document.addEventListener('click',async event=>{
   if(btn.id==='audio'){
     const on=btn.getAttribute('aria-pressed')!=='true';
     if(on){try{audio??=new AudioContext();await audio.resume();}catch{return;}}
-    btn.setAttribute('aria-pressed',String(on));btn.textContent=on?'Звук вкл.':'Звук выкл.';if(on)playSound('guard');
+    setSoundEnabled(on);
+    if(on)playSound('guard');
   }else if(btn.id==='map-tab'){view='map';render();}
   else if(btn.id==='army-tab'){view='army';party=[...save.party];render();}
   else if(d.chapter){focus=chapterEntry(d.chapter);render();selectMap(focus,true);}
   else if(d.node)selectMap(d.node);
   else if(d.start!==undefined){
-    if(await request({action:'start',node:focus})){target=0;render();}
+    if(await request({action:'start',node:focus})){setSoundEnabled(false);target=0;render();}
   }else if(d.ally){
     if(party.includes(d.ally))party=party.filter(id=>id!==d.ally);
     else if(party.length<3)party.push(d.ally);

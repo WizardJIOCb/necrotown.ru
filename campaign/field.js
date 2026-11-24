@@ -1,4 +1,4 @@
-import * as W from './vendor/cinderwatch-scene.js?v=focus1';
+import * as W from './vendor/cinderwatch-scene.js?v=far-focus2';
 
 const {THREE, R, CAM, FX, LT, KIT} = W;
 const cameraZoom = {min:75, max:350, initial:200, step:25};

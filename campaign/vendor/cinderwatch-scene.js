@@ -551,8 +551,9 @@ uniform vec2 uDither;
 ${GLSL_BAYER}
 float cocAt(float d){
   float z = d - uDof.x;
-  const float farBlurScale = 0.65;
-  if (z > 0.0) return clamp((z - uDof.y) / uDof.z, 0.0, 1.0) * uDof.w * farBlurScale;
+  // Keep the distant ranks readable at every zoom and render resolution.
+  const float farRadiusPx = 0.5;
+  if (z > 0.0) return clamp((z - uDof.y) / uDof.z, 0.0, 1.0) * farRadiusPx;
   return clamp((-z - uNear.x) / uNear.y, 0.0, 1.0) * uDof.w * uNear.z;
 }
 void main(){
