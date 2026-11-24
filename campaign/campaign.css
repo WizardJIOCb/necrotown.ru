@@ -1,3 +1,4 @@
+html:not(.embedded) {overflow-y:scroll}
 *{box-sizing:border-box} [hidden]{display:none!important}
 :root{color-scheme:dark;--paper:#ede6d4;--muted:#aca998;--line:#49483a;--gold:#d7b36b;--green:#9cbda5;--serif:Georgia,'Times New Roman',serif}
 body{margin:0;background:radial-gradient(ellipse at 54% -20%,#34372b 0,transparent 58%),#141815;color:var(--paper);font:16px/1.48 system-ui,sans-serif;min-height:100vh}

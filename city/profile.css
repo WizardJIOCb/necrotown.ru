@@ -1,3 +1,4 @@
+html {overflow-y:scroll}
 .public-profile{margin:0;background:#131711;color:#e3ddcc;font:15px/1.5 system-ui,sans-serif;--border:#464332;color-scheme:dark}
 .public-profile>header,.public-profile main{max-width:980px;margin:auto;padding:16px 20px}
 .public-profile>header a{color:#e5cda1;font:600 26px Georgia,serif;text-decoration:none}
