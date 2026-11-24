@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#161a17">
+  <title>Поход за Престолом праха · NecroTown</title>
+  <link rel="stylesheet" href="campaign.css">
+</head>
+<body>
+  <header class="mast"><div class="mast-inner">
+    <a class="wordmark" href="/" aria-label="NecroTown, вернуться в город"><i>♜</i> NecroTown</a>
+    <nav aria-label="Разделы похода"><button id="map-tab">Карта похода</button><button id="army-tab">Отряд</button></nav>
+    <a class="city" href="/">В город ↗</a>
+  </div></header>
+  <main>
+    <div class="heading"><div><p id="eyebrow">Военная кампания</p><h1 id="title">Престол праха</h1></div><div id="progress"></div></div>
+    <div id="notice" role="status"></div>
+    <section id="map" hidden aria-label="Карта маршрутов">
+      <div class="chart-scroll"><div class="chart" id="chart">
+        <canvas id="roads" aria-hidden="true"></canvas>
+        <span class="compass" aria-hidden="true">С<br>✥</span>
+        <div id="pins"></div>
+      </div></div>
+      <div class="legend"><span><b class="key current"></b> Доступно</span><span><b class="key done"></b> Пройдено</span><span><b class="key"></b> Закрыто</span></div>
+      <article class="brief" id="brief"></article>
+    </section>
+    <section id="army" hidden></section>
+    <section id="battle" hidden aria-label="Поле боя">
+      <div class="fieldframe"><div class="fieldtop"><span id="round"></span><span id="biome"></span><button id="audio" aria-pressed="false">Звук выкл.</button></div><canvas id="field" aria-label="Трёхмерная диорама боя"></canvas><p id="fallback" hidden>Тактический режим · выберите цель под полем</p></div>
+      <div id="orders"></div>
+    </section>
+    <footer><span id="account"></span><a href="vendor/LICENSE-cinderwatch.txt">Модели Cinderwatch</a></footer>
+  </main>
+  <script type="module" src="campaign.js"></script>
+</body></html>

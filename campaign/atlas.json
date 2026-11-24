@@ -1,0 +1,217 @@
+{
+  "nodes": [
+    {
+      "id": "gate",
+      "name": "Пепельные ворота",
+      "region": "Костяной тракт",
+      "story": "Погасите огни дозора и проведите легион за городскую стену.",
+      "x": 11,
+      "y": 56,
+      "from": [],
+      "enemies": [
+        "sentry",
+        "archer"
+      ],
+      "biome": "ash",
+      "reward": 12
+    },
+    {
+      "id": "quarry",
+      "name": "Костяная каменоломня",
+      "region": "Северная тропа",
+      "story": "В забое прикован костолом. Перебейте надсмотрщиков, и он присоединится к легиону.",
+      "x": 29,
+      "y": 28,
+      "from": [
+        "gate"
+      ],
+      "enemies": [
+        "brute",
+        "sentry"
+      ],
+      "biome": "quarry",
+      "reward": 16
+    },
+    {
+      "id": "ford",
+      "name": "Вдовий брод",
+      "region": "Южная тропа",
+      "story": "Лучница ждёт переправы. Снимите караул на другом берегу.",
+      "x": 31,
+      "y": 76,
+      "from": [
+        "gate"
+      ],
+      "enemies": [
+        "archer",
+        "wraith",
+        "archer"
+      ],
+      "biome": "marsh",
+      "reward": 16
+    },
+    {
+      "id": "bridge",
+      "name": "Чёрный мост",
+      "region": "Старая граница",
+      "story": "Страж моста собирает пошлину душами. Его тяжёлый удар можно переждать под щитами.",
+      "x": 50,
+      "y": 50,
+      "from": [
+        "quarry",
+        "ford"
+      ],
+      "enemies": [
+        "warden",
+        "archer"
+      ],
+      "biome": "frost",
+      "reward": 20
+    },
+    {
+      "id": "belfry",
+      "name": "Немая звонница",
+      "region": "Верхний город",
+      "story": "Пока звонарь поднимает молот, его свита расстреливает подходы.",
+      "x": 67,
+      "y": 25,
+      "from": [
+        "bridge"
+      ],
+      "enemies": [
+        "wraith",
+        "archer",
+        "warden"
+      ],
+      "biome": "ruins",
+      "reward": 24
+    },
+    {
+      "id": "forge",
+      "name": "Красная кузня",
+      "region": "Нижний город",
+      "story": "Два палача стерегут литейный двор. Разбейте их строй ударом по площади.",
+      "x": 69,
+      "y": 76,
+      "from": [
+        "bridge"
+      ],
+      "enemies": [
+        "brute",
+        "brute",
+        "sentry"
+      ],
+      "biome": "ember",
+      "reward": 24
+    },
+    {
+      "id": "throne",
+      "name": "Престол праха",
+      "region": "Цитадель",
+      "story": "Свергните Костяного короля. Перед третьим ударом он поднимает корону и созывает мёртвых.",
+      "x": 89,
+      "y": 46,
+      "from": [
+        "belfry",
+        "forge"
+      ],
+      "enemies": [
+        "king",
+        "wraith",
+        "sentry"
+      ],
+      "biome": "throne",
+      "reward": 40
+    }
+  ],
+  "units": {
+    "blade": {
+      "name": "Костяной мечник",
+      "model": "skel",
+      "attack": 7,
+      "stat": 0,
+      "gear": "sword",
+      "description": "Рубит выбранную цель."
+    },
+    "shield": {
+      "name": "Могильный страж",
+      "model": "foot",
+      "attack": 4,
+      "stat": 3,
+      "gear": "shield",
+      "description": "Каждый ход прикрывает отряд на 3 урона."
+    },
+    "seer": {
+      "name": "Жрица пепла",
+      "model": "skel",
+      "attack": 5,
+      "stat": 0,
+      "gear": "seer",
+      "description": "После атаки возвращает отряду 2 здоровья."
+    },
+    "breaker": {
+      "name": "Костолом",
+      "model": "ogre",
+      "attack": 10,
+      "stat": 1,
+      "gear": "club",
+      "description": "Тяжёлый удар и 1 защиты. Союзник из каменоломни."
+    },
+    "ranger": {
+      "name": "Лучница брода",
+      "model": "foot",
+      "attack": 8,
+      "stat": 0,
+      "gear": "bow",
+      "description": "Стрела ранит соседние цели на 2. Союзница с брода."
+    },
+    "sentry": {
+      "name": "Дозорный",
+      "model": "foot",
+      "attack": 5,
+      "stat": 19,
+      "gear": "sword",
+      "description": ""
+    },
+    "archer": {
+      "name": "Стрелок",
+      "model": "foot",
+      "attack": 7,
+      "stat": 14,
+      "gear": "bow",
+      "description": ""
+    },
+    "brute": {
+      "name": "Палач",
+      "model": "ogre",
+      "attack": 9,
+      "stat": 27,
+      "gear": "club",
+      "description": ""
+    },
+    "wraith": {
+      "name": "Сборщик душ",
+      "model": "skel",
+      "attack": 8,
+      "stat": 20,
+      "gear": "seer",
+      "description": ""
+    },
+    "warden": {
+      "name": "Страж моста",
+      "model": "giant",
+      "attack": 8,
+      "stat": 38,
+      "gear": "shield",
+      "description": ""
+    },
+    "king": {
+      "name": "Костяной король",
+      "model": "giant",
+      "attack": 12,
+      "stat": 62,
+      "gear": "crown",
+      "description": ""
+    }
+  }
+}

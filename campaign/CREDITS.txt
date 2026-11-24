@@ -1,0 +1,11 @@
+Procedural character geometry, equipment and animation adapted from Kevin Ngo's Cinderwatch.
+Source: https://github.com/kevintngo/cinderwatch/tree/797234e36ac28fd2a8c0b85936d7bded6816a689
+Original files: src/00-util.js, 10-gfx.js, 32-props.js and 50-rig.js.
+License: vendor/LICENSE-cinderwatch.txt (MIT).
+
+Three.js r170 is bundled locally. License: vendor/LICENSE-three.txt (MIT).
+
+Campaign atlas: generated with OpenAI ImageGen for NecroTown.
+Prompt:
+Wide landscape 2:1 dark fantasy hand-engraved campaign atlas, an antique copperplate print on smoke-dark muted moss olive parchment, finely crosshatched ink contours, overhead oblique medieval wilderness map. At left a ruined gate, northwest a bone quarry, southwest a drowned village, center a river running vertically under a lone black bridge, northeast a lonely belfry and southeast a glowing small forge, far right a tall black gothic citadel. Tiny dead forests and ridgelines scattered around them, delicate highlights, visible paper grain, crafted collectors edition RPG illustration. Entire landscape edge to edge. No writing, text, symbols, route lines, UI, frame, compass, red markers or lettering. Muted bone, ochre, antique sage, charcoal, low saturation, distinctly readable terrain relief.
+

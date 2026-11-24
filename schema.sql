@@ -70,3 +70,8 @@ CREATE TABLE IF NOT EXISTS chat_messages (
   KEY idx_chat_created (created_at),
   KEY idx_chat_id (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+CREATE TABLE IF NOT EXISTS campaign_saves (
+  user_id INT UNSIGNED PRIMARY KEY,
+  progress MEDIUMTEXT NOT NULL,
+  CONSTRAINT fk_campaign_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
