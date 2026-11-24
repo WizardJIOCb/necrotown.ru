@@ -1149,7 +1149,7 @@
     }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
-  <link rel="stylesheet" href="/city/city.css?v=online1">
+  <link rel="stylesheet" href="/city/city.css?v=mentions1">
 </head>
 <body>
   <main class="intro" id="intro">
@@ -2176,6 +2176,28 @@
       return `<time datetime="${date.toISOString()}">${label}</time>`;
     }
 
+    // The address stays in the stored message, so it also works when reloading chat history.
+    const chatAddress = /^@([a-zа-яё0-9_-]+),\s*/iu;
+
+    onlinePlayers.addEventListener("click", event => {
+      const button = event.target.closest("button[data-recipient]");
+      if (!button) return;
+      const input = chatForm.elements.message;
+      const draft = input.value.replace(chatAddress, "");
+      input.value = "@" + button.dataset.recipient + ", " + draft;
+      input.setCustomValidity("");
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+    });
+
+    function renderChatMessage(message, today) {
+      const address = message.message.match(chatAddress);
+      const forMe = address && address[1].toLowerCase() === state.hero?.username?.toLowerCase();
+      return `<div class="chat-message${forMe ? " chat-for-me" : ""}">
+        ${forMe ? '<span class="chat-to-you">Вам</span> ' : ""}${chatTimestamp(message.created_epoch, today)}<strong>${escapeHtml(message.username)}</strong>: ${escapeHtml(message.message)}
+      </div>`;
+    }
+
     async function loadChat() {
       if (!state) {
         return;
@@ -2185,14 +2207,13 @@
         const data = await api("/api/chat.php");
         const players = data.online || [];
         onlineCount.textContent = players.length;
-        const roster = players.map(name => `<li>${escapeHtml(name)}</li>`).join("");
+        const roster = players.map(name => {
+          const nick = escapeHtml(name);
+          return `<li><button type="button" data-recipient="${nick}" aria-label="Обратиться к ${nick}">${nick}</button></li>`;
+        }).join("");
         if (onlinePlayers.innerHTML !== roster) onlinePlayers.innerHTML = roster;
         const today = chatCalendar.format(new Date());
-        chatLog.innerHTML = data.messages.map((message) => `
-          <div class="chat-message">
-            ${chatTimestamp(message.created_epoch, today)}<strong>${escapeHtml(message.username)}</strong>: ${escapeHtml(message.message)}
-          </div>
-        `).join("");
+        chatLog.innerHTML = data.messages.map(message => renderChatMessage(message, today)).join("");
         chatLog.scrollTop = chatLog.scrollHeight;
       } catch (error) {
         chatLog.textContent = error.message;
@@ -2266,20 +2287,33 @@
       });
     });
 
+    chatForm.elements.message.addEventListener("input", event => event.target.setCustomValidity(""));
     chatForm.addEventListener("submit", async (event) => {
       event.preventDefault();
       const input = chatForm.elements.message;
       const message = input.value.trim();
-      if (!message) {
+      const send = chatForm.querySelector("button[type=submit]");
+      if (!message || send.disabled) return;
+      if (!message.replace(chatAddress, "").trim() || message.length > input.maxLength) {
+        input.setCustomValidity(message.length > input.maxLength ? "Сократите сообщение до 300 символов." : "Введите текст после обращения.");
+        input.reportValidity();
         return;
       }
-
-      input.value = "";
-      await api("/api/chat.php", {
-        method: "POST",
-        body: JSON.stringify({ message })
-      });
-      await loadChat();
+      send.disabled = true;
+      try {
+        await api("/api/chat.php", {
+          method: "POST",
+          body: JSON.stringify({ message })
+        });
+        if (input.value.trim() === message) input.value = "";
+        await loadChat();
+      } catch (error) {
+        input.setCustomValidity(error.message);
+        input.reportValidity();
+        input.setCustomValidity("");
+      } finally {
+        send.disabled = false;
+      }
     });
 
     logoutButton.addEventListener("click", async () => {

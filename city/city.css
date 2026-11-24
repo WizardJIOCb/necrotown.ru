@@ -69,8 +69,12 @@ body.is-game .game-shell {
 .chat-online h3 {display:flex;align-items:center;gap:8px;margin:1px 0 8px;color:#ece2c9;font:500 18px Georgia,serif}
 #onlineCount {color:#bec8a6;font:600 13px system-ui,sans-serif;font-variant-numeric:tabular-nums}
 #onlinePlayers {list-style:none;max-height:140px;overflow:auto;margin:0;padding:0}
-#onlinePlayers li {display:flex;align-items:baseline;gap:7px;padding:3px 0;color:#dbd5c3;font-size:13px;overflow-wrap:anywhere}
-#onlinePlayers li::before {content:"";flex:none;width:6px;height:6px;align-self:flex-start;margin-top:5px;background:#9fbd83;border-radius:50%}
+#onlinePlayers button {display:flex;align-items:baseline;gap:7px;width:100%;min-height:24px;padding:4px 3px;border:0;background:transparent;color:#dbd5c3;font:inherit;font-size:13px;text-align:left;overflow-wrap:anywhere;cursor:pointer}
+#onlinePlayers button::before {content:"";flex:none;width:6px;height:6px;background:#9fbd83;border-radius:50%}
+#onlinePlayers button:hover,#onlinePlayers button:focus-visible {background:#2d3127;color:#f2dfb2;text-decoration:underline}
+#onlinePlayers button:focus-visible {outline:1px solid #d1b579;outline-offset:-1px}
+.chat-message.chat-for-me {padding:4px 8px;border-left:3px solid #d9b66d;background:#393427;color:#f4e9d1}
+.chat-to-you {color:#ecd194;font-weight:700;font-size:12px;margin-right:3px}
 @media(max-width:480px) {
   .chat-panel {grid-template-columns:minmax(0,1fr) minmax(92px,32%);column-gap:8px}
   .chat-online h3 {font-size:16px}
