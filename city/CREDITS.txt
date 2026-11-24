@@ -1,6 +1,9 @@
 NecroTown city illustrations generated for this project with OpenAI ImageGen.
 The originals were cropped and encoded as WebP for the game.
 
+Favicon and touch icon (ICO and PNG)
+Create ONE exceptionally simple, professionally designed iconic favicon for NecroTown, a gothic strategy game. Square 1:1. A single broad solid antique gold silhouette of a squat castle rook tower, on perfectly flat very dark forest green black background #141813 edge to edge. Visually bold, fills 86% width and height. Three large blunt battlements at top, wide flared base. A clearly recognizable skull carved into tower in the central area using two big angular dark eye sockets and a small triangular nose, with a simple upper jaw motif. Readable like an 8-bit heraldic emblem at 16 pixels. Flat face-on symmetric heraldic mark, two tones with very subtle gold highlight at edge. Absolutely no type, no border, no outer frame, no mockup, no shadow or 3D scene, no tiny ornamental details. A beautiful iconic necromancer stronghold.
+
 houses
 A precisely aligned contact sheet with 3 equal columns and 2 equal rows (six completely separate landscape vignettes), full bleed 3:2 overall. High-end dark fantasy oil-painted matte illustrations for a gothic city building selection screen, distinctly readable architecture, dramatic light shafts, textured stone, restrained antique amber accents, no lettering, no framing, no gutters. Top left a red-bannered vampire military keep with fortifications. Top center a moonlit blue arcane observatory and alchemical glass domes. Top right a medieval night market arcade with lanterns and awnings. Bottom left a green-lit necromancy sanctum among crooked tombstones. Bottom center a crimson stained-glass blood cathedral. Bottom right a violet-black thieves' mansion above foggy rooftops. One architectural hero per tile, panorama-friendly composition, lively focal light.
 
