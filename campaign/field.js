@@ -217,7 +217,7 @@ export function createField(canvas,units) {
     const from=squads.find(s=>!s.side&&s.unit.gear==='seer')||squads[0];
     const at=foe.anchor, start=from.anchor;
     if(event.card==='nova'){
-      for(const other of squads.filter(s=>s.side&&event.before[s.i].hp>0)){
+      for(const other of squads.filter(s=>s.side&&event.before.foes[s.i].hp>0)){
         const p=other.anchor;
         W.fxBolt([start.x,start.y+1.8,start.z],[p.x,p.y+1.2,p.z],.38,[.62,.87,1.72],.1);
         W.fxExplosion(p.x,p.y+.2,p.z,.60);
@@ -252,23 +252,28 @@ export function createField(canvas,units) {
     W.applyCamera();
     const torches=[];
     for(const squad of squads){
-      const enemy=!!squad.side, foe=battle.foes[squad.i], alive=!enemy||foe.hp>0;
+      const enemy=!!squad.side;
+      const alive=enemy ? battle.foes[squad.i].hp>0 : battle.hp>0;
       const leader=squad.anchor, other=enemy?squads[squad.i%3]:target;
       const focus=other.anchor, gear=squad.unit.gear, isRanged=gear==='bow'||gear==='seer';
-      const lost=enemy&&!alive&&action?.before[squad.i]?.hp>0;
-      if(squad.light){squad.light.alive=alive;if(alive)torches.push(squad.light);}
+      const fellThisTurn=!alive && (enemy ? action?.before.foes[squad.i].hp : action?.before.hp)>0;
+      // Enemy casualties fall on our strike; the legion falls on the counterattack.
+      const impactReached=enemy ? action?.hit : t>=.77;
+      const standing=alive || (fellThisTurn && !impactReached);
+      if(squad.light){squad.light.alive=standing;if(standing)torches.push(squad.light);}
       const hit=enemy&&action&&(action.card==='nova'||squad.i===action.target);
       const phase=enemy?(t-.55)*2.25:t*2.15;
       const swing=action&&phase>0&&phase<1?phase:-1;
       for(const member of squad.members){
+        if(!standing && (!fellThisTurn || action.broken.has(member)))continue;
         const p=member.pos;
         const yaw=Math.atan2(focus.x-p.x,focus.z-p.z);
         const pose=actorPose(squad.unit,p.x,p.y,p.z,yaw,member.scale,time*(swing>0?9:3)+member.seed,swing,hit&&t>.34&&t<.56?1:0);
-        if(lost&&action.hit&&!action.broken.has(member)){
+        if(!standing){
           W.shatter(e=>drawActor(squad.unit,e),pose,[Math.sin(yaw)*-1.8,2,-Math.cos(yaw)*1.8]);
           action.broken.add(member);
+          continue;
         }
-        if(!alive&&!(lost&&!action.hit))continue;
         if(swing>0){
           const delta=Math.sin(swing*Math.PI), travel=isRanged?.22:Math.min(4.2,Math.max(0,p.distanceTo(focus)-1));
           pose.x+=Math.sin(yaw)*travel*delta;pose.z+=Math.cos(yaw)*travel*delta;
