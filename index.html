@@ -1147,7 +1147,6 @@
         padding: 14px;
       }
     }
-    .expedition-entry { position: absolute; top: calc(50% + clamp(54px, 8vw, 92px)); left: 50%; transform: translateX(-50%); color: #d7bd94; font: 17px Georgia, serif; text-decoration: none; border-bottom: 1px solid #927959; padding: 7px 0; white-space: nowrap; }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
   <link rel="stylesheet" href="/city/city.css?v=online1">
@@ -1155,7 +1154,6 @@
 <body>
   <main class="intro" id="intro">
     <h1 class="brand" id="enterGame" role="button" tabindex="0" aria-label="Открыть вход в NecroTown">NecroTown</h1>
-    <a class="expedition-entry" href="/campaign/">Карта похода</a>
   </main>
 
   <section class="auth-shell" id="authShell" aria-hidden="true">
@@ -1243,7 +1241,7 @@
   </section>
 
   <script src="/city/district.js?v=1"></script>
-  <script src="/city/expedition.js?v=1"></script>
+  <script src="/city/expedition.js?v=intro2"></script>
   <script>
     const intro = document.getElementById("intro");
     const enterGame = document.getElementById("enterGame");
@@ -1609,10 +1607,12 @@
     }
 
     function showAuth() {
+      if (state || intro.inert) return;
+      intro.inert = true;
       intro.classList.add("is-hidden");
       authShell.classList.add("is-visible");
       authShell.setAttribute("aria-hidden", "false");
-      window.setTimeout(() => authForms.login.querySelector("input").focus(), 520);
+      authForms.login.querySelector("input").focus({ preventScroll: true });
     }
 
     function setAuthMessage(text) {
@@ -2288,13 +2288,16 @@
       window.location.reload();
     });
 
+    const introDelay = new Promise(resolve => window.setTimeout(resolve, 1000));
     api("/api/auth.php?action=me")
-      .then((data) => {
-        if (data.authenticated) {
+      .catch(() => null)
+      .then(data => {
+        if (data?.authenticated) {
           showGame(data.state);
+        } else {
+          introDelay.then(showAuth);
         }
-      })
-      .catch(() => {});
+      });
   </script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-function openExpedition(host, section, guest = false) {
+function openExpedition(host, section) {
   const view = section === 'army' ? 'army' : 'map';
   let frame = host.querySelector('.expedition-frame');
   if (frame) {
@@ -8,9 +8,9 @@ function openExpedition(host, section, guest = false) {
   }
   frame = document.createElement('iframe');
   frame.className = 'expedition-frame';
-  frame.title = 'Военная кампания';
+  frame.title = 'Р’РѕРµРЅРЅР°СЏ РєР°РјРїР°РЅРёСЏ';
   frame.dataset.view = view;
-  frame.src = '/campaign/?embed=' + (guest ? 'guest' : 'city') + '#' + view;
+  frame.src = '/campaign/?embed=city#' + view;
   host.replaceChildren(frame);
 }
 
@@ -33,20 +33,4 @@ window.addEventListener('message', async event => {
       renderResources();
     }
   }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const entry = document.querySelector('.expedition-entry');
-  entry.addEventListener('click', event => {
-    if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
-    event.preventDefault();
-    const dialog = document.createElement('dialog');
-    dialog.className = 'guest-expedition';
-    dialog.innerHTML = '<button type="button" class="guest-return">← На главную</button><div class="guest-stage"></div>';
-    document.body.append(dialog);
-    dialog.querySelector('button').onclick = () => dialog.close();
-    dialog.onclose = () => { dialog.remove(); entry.focus(); };
-    openExpedition(dialog.querySelector('.guest-stage'), 'campaign', true);
-    dialog.showModal();
-  });
 });
