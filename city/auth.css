@@ -1,9 +1,18 @@
+body:not(.is-game) {
+  background: linear-gradient(90deg, transparent 45%, #0b0e10a8), #181c1b var(--gate-image, url("/city/login-gate.webp")) 36% center / cover no-repeat fixed;
+}
+body:not(.is-game)::before {display: none}
+.intro .brand {
+  color: #fff2d2;
+  font-size: clamp(32px, 10vw, 144px);
+  text-shadow: 0 2px 5px #151009, 0 6px 32px #000d;
+}
 .auth-shell {
   --gate-gold: #d5b574;
   place-items: safe center end;
   padding: clamp(24px, 5vh, 70px) clamp(36px, 10vw, 190px);
   overflow-y: auto;
-  background: linear-gradient(90deg, transparent 45%, #0b0e10a8), #181c1b var(--gate-image, url("/city/login-gate.webp")) 36% center / cover no-repeat;
+  background: transparent;
   transform: none;
 }
 .auth-shell .auth-panel {
@@ -44,7 +53,8 @@
 .auth-panel .message {min-height: 0; color: #ffd49e}
 .auth-panel .message:not(:empty) {margin-top: 16px}
 @media (max-width: 700px) {
-  .auth-shell {place-items: safe center; padding: clamp(90px, 20svh, 180px) 16px 24px; background-position: 28% center}
+  body:not(.is-game) {background-position: 28% center}
+  .auth-shell {place-items: safe center; padding: clamp(90px, 20svh, 180px) 16px 24px}
   .auth-shell .auth-panel {padding: 22px 24px 26px}
   .auth-panel .auth-title {margin-bottom: 20px}
 }

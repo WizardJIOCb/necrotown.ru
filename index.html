@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preload" as="image" type="image/webp" href="/city/login-gate.webp">
   <link rel="icon" href="/favicon.ico?v=1" sizes="16x16 32x32 48x48 64x64">
   <link rel="icon" type="image/png" sizes="48x48" href="/city/favicon-48.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/city/apple-touch-icon.png">
@@ -1151,7 +1152,7 @@
   </style>
   <link rel="stylesheet" href="/city/city.css?v=illustrations1">
   <link rel="stylesheet" href="/city/player-view.css?v=1">
-  <link rel="stylesheet" href="/city/auth.css?v=gate1">
+  <link rel="stylesheet" href="/city/auth.css?v=gate2">
   <link rel="stylesheet" href="/city/profile.css?v=scroll1">
 </head>
 <body>
@@ -2372,7 +2373,7 @@
           showGame(data.state);
         } else {
           if (data?.gateArt && /^[a-f0-9]{64}$/.test(data.gateArt)) {
-            authShell.style.setProperty('--gate-image', 'url("/api/art.php?asset=login-gate&v=' + data.gateArt + '")');
+            document.body.style.setProperty('--gate-image', 'url("/api/art.php?asset=login-gate&v=' + data.gateArt + '")');
           }
           introDelay.then(showAuth);
         }
