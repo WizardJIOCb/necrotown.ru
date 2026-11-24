@@ -26,6 +26,11 @@ function intent(string $kind, int $turn): int
 {
     $balance = atlas()['balance'];
     $base = atlas()['units'][$kind]['attack'];
+    if ($kind === 'rootwarden') return $base + 3 * min($turn - 1, 3);
+    if ($kind === 'bellregent') {
+        if ($turn % 3 === 0) return 0;
+        if ($turn > 1 && $turn % 3 === 1) return 2 * $base;
+    }
     if ($kind === 'heliarch') return $turn % 2 === 0 ? 2 * $base : intdiv($base, 2);
     if ($kind === 'king' && $turn % 3 === 0) return $base + $balance['kingBonus'];
     if ($kind === 'keeper' && $turn % 4 === 0) return $base + $balance['keeperBonus'];

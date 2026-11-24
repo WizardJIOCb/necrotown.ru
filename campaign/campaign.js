@@ -74,7 +74,7 @@ function mapPage() {
     const previous=atlas.chapters.find(ch=>ch.id===c.requires);
     const progress=chapterNodes(c.requires);
     const hint=open?'':' · '+html(previous.name)+' '+progress.filter(cleared).length+'/'+progress.length;
-    const number=['I','II','III'][i] ?? String(i+1);
+    const number=['I','II','III','IV','V'][i] ?? String(i+1);
     return '<button type="button" data-chapter="'+c.id+'" aria-pressed="'+selected+'" '+(open?'':'disabled')+'>'+number+'. '+html(c.name)+hint+'</button>';
   }).join('');
   $('pins').innerHTML=chapterNodes(chosen.chapter).map(n=>{

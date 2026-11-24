@@ -17,6 +17,18 @@
       "name": "Полое солнце",
       "art": "hollow-sun.webp",
       "requires": "tide"
+    },
+    {
+      "id": "alder",
+      "name": "Черноольховая топь",
+      "art": "black-alder.webp",
+      "requires": "hollow"
+    },
+    {
+      "id": "chime",
+      "name": "Последний перезвон",
+      "art": "last-bell.webp",
+      "requires": "alder"
     }
   ],
   "nodes": [
@@ -505,6 +517,332 @@
       "symbol": "☼",
       "ending": "Диск замер. По пустому акведуку снова пошла морская вода, а в гавани рыбаки впервые увидели у своего маяка обыкновенную тень.",
       "victory": "Полое солнце погасло"
+    },
+    {
+      "id": "spillway",
+      "name": "Прорванная плотина",
+      "region": "Верховья акведука",
+      "story": "Вода вернулась в русло и вынесла к маяку связку пустых ульев. Выше по течению кто-то разбирает плотину бревно за бревном.",
+      "x": 10,
+      "y": 48,
+      "from": [],
+      "enemies": [
+        "reedbow",
+        "lamplighter",
+        "bogman"
+      ],
+      "chapter": "alder",
+      "scene": [
+        192,
+        "fen"
+      ],
+      "reward": 34,
+      "symbol": "≈"
+    },
+    {
+      "id": "hives",
+      "name": "Глухая пасека",
+      "region": "Ольховые острова",
+      "story": "В ульях вместо сот лежат бронзовые язычки. Пасечники развесили их над тропой: стоит задеть ветку, и камышовые стрелки откроют огонь.",
+      "x": 24,
+      "y": 21,
+      "from": [
+        "spillway"
+      ],
+      "enemies": [
+        "reedbow",
+        "waxwarden",
+        "reedbow"
+      ],
+      "chapter": "alder",
+      "scene": [
+        203,
+        "ashen"
+      ],
+      "reward": 38,
+      "symbol": "⬡"
+    },
+    {
+      "id": "reedferry",
+      "name": "Камышовый паром",
+      "region": "Тихий плёс",
+      "story": "Паром привязан под водой. Заберите у перевозчиков нож для каната, пока их товарищи перебираются по настилу.",
+      "x": 21,
+      "y": 77,
+      "from": [
+        "spillway"
+      ],
+      "enemies": [
+        "bogman",
+        "corsair",
+        "bogman"
+      ],
+      "chapter": "alder",
+      "scene": [
+        214,
+        "fen"
+      ],
+      "reward": 38,
+      "symbol": "⚓"
+    },
+    {
+      "id": "rootspan",
+      "name": "Корневой мост",
+      "region": "Старая протока",
+      "story": "Под корой моста тянется цепь. Каждое звено дрожит, хотя в лесу тихо. Перейдите протоку и проследите, куда уходит звон.",
+      "x": 48,
+      "y": 48,
+      "from": [
+        "hives",
+        "reedferry"
+      ],
+      "enemies": [
+        "waxwarden",
+        "reedbow",
+        "riveter"
+      ],
+      "chapter": "alder",
+      "scene": [
+        225,
+        "fen"
+      ],
+      "reward": 44,
+      "symbol": "♜"
+    },
+    {
+      "id": "oakchapel",
+      "name": "Часовня в дубе",
+      "region": "Сухая грива",
+      "story": "В дупле сохранился список тех, кто звонил с горного перевала. Последнюю строку переписывают мокрыми чернилами прямо у вас на глазах.",
+      "x": 68,
+      "y": 22,
+      "from": [
+        "rootspan"
+      ],
+      "enemies": [
+        "cantor",
+        "waxwarden",
+        "reedbow"
+      ],
+      "chapter": "alder",
+      "scene": [
+        236,
+        "ashen"
+      ],
+      "reward": 48,
+      "symbol": "♝"
+    },
+    {
+      "id": "peatkiln",
+      "name": "Торфяная печь",
+      "region": "Чёрные выгоны",
+      "story": "Из печи выгребают бронзу, а торф складывают в стороне. Обойдите зольник и возьмите двор, прежде чем из топки достанут очередной язык.",
+      "x": 70,
+      "y": 77,
+      "from": [
+        "rootspan"
+      ],
+      "enemies": [
+        "riveter",
+        "bogman",
+        "waxwarden"
+      ],
+      "chapter": "alder",
+      "scene": [
+        247,
+        "ember"
+      ],
+      "reward": 48,
+      "symbol": "⚒"
+    },
+    {
+      "id": "alderheart",
+      "name": "Дупло звонаря",
+      "region": "Чёрная ольха",
+      "story": "Корневик раскачивает колокол всем стволом. Первые четыре хода каждый следующий удар сильнее предыдущего. Решите, кого снять до того, как корни натянутся.",
+      "x": 90,
+      "y": 44,
+      "from": [
+        "oakchapel",
+        "peatkiln"
+      ],
+      "enemies": [
+        "rootwarden",
+        "reedbow",
+        "bogman"
+      ],
+      "chapter": "alder",
+      "scene": [
+        258,
+        "fen"
+      ],
+      "reward": 78,
+      "symbol": "♛",
+      "victory": "Чёрная ольха умолкла",
+      "ending": "Вы сняли колокол с цепи. На его ободе выбит почтовый рог, а под ним название перевала. Оттуда, с гор, уже идёт ответный звон."
+    },
+    {
+      "id": "postroad",
+      "name": "Белая застава",
+      "region": "Северный перевал",
+      "story": "Из ольхи вы извлекли колокол с гербом горной почты. У заставы мёртвый почтальон запрягает сани. В сумке одна ведомость: имена всех живых в Некротауне.",
+      "x": 11,
+      "y": 47,
+      "from": [],
+      "enemies": [
+        "courier",
+        "icebow",
+        "waxwarden"
+      ],
+      "chapter": "chime",
+      "scene": [
+        271,
+        "frost"
+      ],
+      "reward": 40,
+      "symbol": "✉"
+    },
+    {
+      "id": "chainlift",
+      "name": "Цепной подъёмник",
+      "region": "Ветровая гряда",
+      "story": "Лебёдка везёт наверх пустые клетки, вниз возвращаются запечатанные мешки. Перехватите верхнюю площадку, пока караул меняет цепь.",
+      "x": 23,
+      "y": 20,
+      "from": [
+        "postroad"
+      ],
+      "enemies": [
+        "icebow",
+        "riveter",
+        "icebow"
+      ],
+      "chapter": "chime",
+      "scene": [
+        282,
+        "frost"
+      ],
+      "reward": 46,
+      "symbol": "⚙"
+    },
+    {
+      "id": "icevault",
+      "name": "Ледяной тоннель",
+      "region": "Старый почтовый ход",
+      "story": "Во льду видны следы полозьев. Ведите легион вдоль них: ледорубы уже запирают внутренние ворота.",
+      "x": 22,
+      "y": 78,
+      "from": [
+        "postroad"
+      ],
+      "enemies": [
+        "icehewer",
+        "courier",
+        "bogman"
+      ],
+      "chapter": "chime",
+      "scene": [
+        293,
+        "frost"
+      ],
+      "reward": 46,
+      "symbol": "❄"
+    },
+    {
+      "id": "viaduct",
+      "name": "Три арки",
+      "region": "Мост над облаками",
+      "story": "За средней аркой видна башня. Письма из башни спускают на тонком тросе. Возьмите мост, и дорога к писцам будет открыта.",
+      "x": 48,
+      "y": 48,
+      "from": [
+        "chainlift",
+        "icevault"
+      ],
+      "enemies": [
+        "icehewer",
+        "icebow",
+        "courier"
+      ],
+      "chapter": "chime",
+      "scene": [
+        304,
+        "frost"
+      ],
+      "reward": 50,
+      "symbol": "♜"
+    },
+    {
+      "id": "register",
+      "name": "Реестр имён",
+      "region": "Открытый скрипторий",
+      "story": "Среди раскрытых книг снег лежит только на чистых листах. Унесите ведомость Некротауна из скриптория, пока писцы сверяют имена.",
+      "x": 72,
+      "y": 24,
+      "from": [
+        "viaduct"
+      ],
+      "enemies": [
+        "courier",
+        "cantor",
+        "icebow"
+      ],
+      "chapter": "chime",
+      "scene": [
+        315,
+        "ashen"
+      ],
+      "reward": 54,
+      "symbol": "✧"
+    },
+    {
+      "id": "bellmould",
+      "name": "Литейный двор",
+      "region": "Нижняя звонница",
+      "story": "Колокол ещё висит на кране, но на бронзе уже проступают буквы. Захватите двор, пока клепальщики подгоняют новое било.",
+      "x": 72,
+      "y": 78,
+      "from": [
+        "viaduct"
+      ],
+      "enemies": [
+        "icehewer",
+        "riveter",
+        "courier"
+      ],
+      "chapter": "chime",
+      "scene": [
+        326,
+        "ember"
+      ],
+      "reward": 54,
+      "symbol": "⚒"
+    },
+    {
+      "id": "laststroke",
+      "name": "Чёрная колокольня",
+      "region": "Вершина перевала",
+      "story": "Регент звонницы читает имена ударами колокола. Каждый третий ход он замолкает, а сразу после паузы бьёт с двойной силой. Его свита продолжает бой даже в тишине.",
+      "x": 91,
+      "y": 44,
+      "from": [
+        "register",
+        "bellmould"
+      ],
+      "enemies": [
+        "bellregent",
+        "courier",
+        "icehewer"
+      ],
+      "chapter": "chime",
+      "scene": [
+        337,
+        "frost"
+      ],
+      "reward": 92,
+      "symbol": "♛",
+      "victory": "Звон оборвался",
+      "ending": "Последний лист с именами сгорел в жаровне. Наутро почтальон впервые спустился с перевала налегке. В Некротауне открыли ворота и впустили его погреться."
     }
   ],
   "units": {
@@ -658,6 +996,70 @@
       "attack": 14,
       "stat": 102,
       "gear": "crown",
+      "description": ""
+    },
+    "reedbow": {
+      "name": "Камышовый стрелок",
+      "model": "foot",
+      "attack": 12,
+      "stat": 26,
+      "gear": "bow",
+      "description": ""
+    },
+    "bogman": {
+      "name": "Топляк",
+      "model": "skel",
+      "attack": 10,
+      "stat": 37,
+      "gear": "sword",
+      "description": ""
+    },
+    "waxwarden": {
+      "name": "Восковой страж",
+      "model": "foot",
+      "attack": 12,
+      "stat": 43,
+      "gear": "shield",
+      "description": ""
+    },
+    "rootwarden": {
+      "name": "Корневик",
+      "model": "giant",
+      "attack": 12,
+      "stat": 107,
+      "gear": "club",
+      "description": ""
+    },
+    "icebow": {
+      "name": "Стрелок перевала",
+      "model": "foot",
+      "attack": 13,
+      "stat": 28,
+      "gear": "bow",
+      "description": ""
+    },
+    "courier": {
+      "name": "Мёртвый гонец",
+      "model": "skel",
+      "attack": 12,
+      "stat": 38,
+      "gear": "sword",
+      "description": ""
+    },
+    "icehewer": {
+      "name": "Ледоруб",
+      "model": "ogre",
+      "attack": 13,
+      "stat": 45,
+      "gear": "club",
+      "description": ""
+    },
+    "bellregent": {
+      "name": "Регент звонницы",
+      "model": "giant",
+      "attack": 17,
+      "stat": 117,
+      "gear": "seer",
       "description": ""
     }
   }
