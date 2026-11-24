@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
+require __DIR__ . '/player_presence.php';
 
 $action = $_GET['action'] ?? '';
 
@@ -20,6 +21,7 @@ if ($action === 'me') {
 
 if ($action === 'logout') {
     require_method('POST');
+    leave_player_presence();
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();

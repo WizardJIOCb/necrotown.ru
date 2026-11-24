@@ -1150,7 +1150,7 @@
     .expedition-entry { position: absolute; top: calc(50% + clamp(54px, 8vw, 92px)); left: 50%; transform: translateX(-50%); color: #d7bd94; font: 17px Georgia, serif; text-decoration: none; border-bottom: 1px solid #927959; padding: 7px 0; white-space: nowrap; }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
-  <link rel="stylesheet" href="/city/city.css?v=1">
+  <link rel="stylesheet" href="/city/city.css?v=online1">
 </head>
 <body>
   <main class="intro" id="intro">
@@ -1231,6 +1231,10 @@
     <section class="chat-panel" aria-label="Чат">
       <h2 class="chat-title">Чат города</h2>
       <div class="chat-log" id="chatLog"></div>
+      <aside class="chat-online" aria-labelledby="onlineTitle">
+        <h3 id="onlineTitle">В сети <span id="onlineCount"></span></h3>
+        <ul id="onlinePlayers"></ul>
+      </aside>
       <form class="chat-form" id="chatForm">
         <input name="message" maxlength="300" autocomplete="off" placeholder="Сообщение" required />
         <button class="chat-send" type="submit">Отправить</button>
@@ -1257,6 +1261,8 @@
     const workPanel = document.getElementById("workPanel");
     const chatLog = document.getElementById("chatLog");
     const chatForm = document.getElementById("chatForm");
+    const onlineCount = document.getElementById("onlineCount");
+    const onlinePlayers = document.getElementById("onlinePlayers");
     const logoutButton = document.getElementById("logoutButton");
     const menuButtons = document.querySelectorAll("button.menu-button");
 
@@ -2177,6 +2183,10 @@
 
       try {
         const data = await api("/api/chat.php");
+        const players = data.online || [];
+        onlineCount.textContent = players.length;
+        const roster = players.map(name => `<li>${escapeHtml(name)}</li>`).join("");
+        if (onlinePlayers.innerHTML !== roster) onlinePlayers.innerHTML = roster;
         const today = chatCalendar.format(new Date());
         chatLog.innerHTML = data.messages.map((message) => `
           <div class="chat-message">
@@ -2185,9 +2195,15 @@
         `).join("");
         chatLog.scrollTop = chatLog.scrollHeight;
       } catch (error) {
-        chatLog.innerHTML = `<div class="chat-message">${error.message}</div>`;
+        chatLog.textContent = error.message;
+        onlineCount.textContent = "…";
+        onlinePlayers.replaceChildren();
       }
     }
+
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden && state) loadChat();
+    });
 
     function showGame(nextState) {
       state = nextState;

@@ -216,6 +216,12 @@ async function init() {
       view=!save.battle&&location.hash==='#army'?'army':'map';party=[...save.party];
       render();if(view==='map')selectMap(focus,true);
       tellCity('expedition-ready');
+      if (!embedded && account) {
+        const heartbeat = () => fetch('/api/chat.php?presence=heartbeat', {cache:'no-store'}).catch(() => {});
+        heartbeat();
+        setInterval(heartbeat, 30000);
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) heartbeat(); });
+      }
     }
   }catch(e){$('notice').textContent=e.message;}
 }

@@ -58,6 +58,23 @@ body.is-game .game-shell {
 .district-detail .stat-row {font-size:12px}
 .chat-panel {padding:14px}
 .chat-title {color:#eddfbd;font:500 22px Georgia,serif;letter-spacing:0;text-transform:none}
+.chat-panel {
+  grid-template-columns:minmax(0,1fr) clamp(118px,20%,250px);
+  grid-template-areas:"title online" "messages online" "compose compose";
+}
+.chat-panel .chat-title {grid-area:title}
+.chat-panel .chat-log {grid-area:messages;overflow-wrap:anywhere}
+.chat-panel .chat-form {grid-area:compose}
+.chat-online {grid-area:online;min-width:0;padding-left:clamp(8px,1.4vw,20px);border-left:1px solid var(--border)}
+.chat-online h3 {display:flex;align-items:center;gap:8px;margin:1px 0 8px;color:#ece2c9;font:500 18px Georgia,serif}
+#onlineCount {color:#bec8a6;font:600 13px system-ui,sans-serif;font-variant-numeric:tabular-nums}
+#onlinePlayers {list-style:none;max-height:140px;overflow:auto;margin:0;padding:0}
+#onlinePlayers li {display:flex;align-items:baseline;gap:7px;padding:3px 0;color:#dbd5c3;font-size:13px;overflow-wrap:anywhere}
+#onlinePlayers li::before {content:"";flex:none;width:6px;height:6px;align-self:flex-start;margin-top:5px;background:#9fbd83;border-radius:50%}
+@media(max-width:480px) {
+  .chat-panel {grid-template-columns:minmax(0,1fr) minmax(92px,32%);column-gap:8px}
+  .chat-online h3 {font-size:16px}
+}
 .chat-send {background:#63563b;box-shadow:none;color:#fff2d5}
 .expedition-frame {display:block;background:#1b1f19;width:100%;height:460px;border:0}
 .guest-expedition {color:#ede6d4;padding:0;width:min(1180px,98vw);max-width:98vw;max-height:95dvh;overflow:auto;border:1px solid #796744;background:#1b1f19}

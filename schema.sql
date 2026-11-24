@@ -75,3 +75,11 @@ CREATE TABLE IF NOT EXISTS campaign_saves (
   progress MEDIUMTEXT NOT NULL,
   CONSTRAINT fk_campaign_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS player_presence (
+  session_key BINARY(32) PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  last_seen TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  KEY idx_presence_seen (last_seen, user_id),
+  CONSTRAINT fk_presence_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
