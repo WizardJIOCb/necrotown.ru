@@ -25,6 +25,8 @@ function intent(string $kind, int $turn): int
 {
     $base = atlas()['units'][$kind]['attack'];
     if ($kind === 'king' && $turn % 3 === 0) return $base + 12;
+    if ($kind === 'keeper' && $turn % 4 === 0) return $base + 17;
+    if ($kind === 'cantor' && $turn % 3 === 0) return $base + 6;
     if (in_array($kind, ['brute', 'warden'], true)) return $turn % 2 === 0 ? $base + 7 : 3;
     return $base;
 }
@@ -44,15 +46,21 @@ function campaign_step(array $save, array $input): array
     } elseif ($action === 'start') {
         $id = $input['node'] ?? '';
         $node = is_string($id) ? ($nodes[$id] ?? null) : null;
-        if ($battle || !$node || in_array($id, $save['cleared'], true) ||
+        if ($battle || !$node ||
             ($node['from'] && !array_intersect($node['from'], $save['cleared']))) throw new DomainException('Этот путь пока закрыт.');
+        $chapters = array_column(atlas()['chapters'], null, 'id');
+        $required = $chapters[$node['chapter']]['requires'];
+        if ($required !== null) {
+            $previousMap = array_filter($nodes, fn($n) => $n['chapter'] === $required);
+            if (array_diff(array_keys($previousMap), $save['cleared'])) throw new DomainException('Сначала пройдите все точки предыдущей карты.');
+        }
         $max = 60 + 3 * count($save['cleared']);
         $foes = [];
         foreach ($node['enemies'] as $kind) {
             $hp = $units[$kind]['stat'];
             $foes[] = ['kind' => $kind, 'hp' => $hp, 'max' => $hp, 'intent' => intent($kind, 1)];
         }
-        $save['battle'] = ['node' => $id, 'turn' => 1, 'hp' => $max, 'max' => $max, 'charge' => 1,
+        $save['battle'] = ['node' => $id, 'replay' => in_array($id, $save['cleared'], true), 'turn' => 1, 'hp' => $max, 'max' => $max, 'charge' => 1,
             'foes' => $foes, 'status' => 'play', 'log' => 'Отряд готов. Выберите цель и отдайте приказ.'];
     } elseif ($action === 'leave' && $battle) {
         $save['battle'] = null;
@@ -99,7 +107,7 @@ function campaign_step(array $save, array $input): array
         $battle['turn']++;
         if (!array_sum(array_column($battle['foes'], 'hp'))) {
             $battle['status'] = 'won';
-            $save['cleared'][] = $battle['node'];
+            if (!in_array($battle['node'], $save['cleared'], true)) $save['cleared'][] = $battle['node'];
         } elseif (!$battle['hp']) {
             $battle['status'] = 'lost';
         }

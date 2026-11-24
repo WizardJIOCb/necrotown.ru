@@ -1147,11 +1147,12 @@
     .expedition-entry { position: absolute; top: calc(50% + clamp(54px, 8vw, 92px)); left: 50%; transform: translateX(-50%); color: #d7bd94; font: 17px Georgia, serif; text-decoration: none; border-bottom: 1px solid #927959; padding: 7px 0; white-space: nowrap; }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
+  <link rel="stylesheet" href="/city/city.css?v=1">
 </head>
 <body>
   <main class="intro" id="intro">
     <h1 class="brand" id="enterGame" role="button" tabindex="0" aria-label="Открыть вход в NecroTown">NecroTown</h1>
-    <a class="expedition-entry" href="/campaign/">Карта похода ↗</a>
+    <a class="expedition-entry" href="/campaign/">Карта похода</a>
   </main>
 
   <section class="auth-shell" id="authShell" aria-hidden="true">
@@ -1197,13 +1198,14 @@
 
   <section class="game-shell" id="gameShell" aria-hidden="true">
     <nav class="top-menu" aria-label="Основное меню">
+      <span class="city-brand"><img src="/city/crest.webp" width="34" height="34" alt="">NecroTown</span>
       <button class="menu-button is-active" type="button" data-view="city">Город</button>
       <button class="menu-button" type="button" data-view="buildings">Постройки</button>
       <button class="menu-button" type="button" data-view="map">Карта</button>
       <button class="menu-button" type="button" data-view="houses">Дома</button>
       <button class="menu-button" type="button" data-view="research">Изучение</button>
-      <a class="menu-button expedition-menu" href="/campaign/#army">Армия</a>
-      <a class="menu-button expedition-menu" href="/campaign/">Кампания</a>
+      <button class="menu-button" type="button" data-view="army">Армия</button>
+      <button class="menu-button" type="button" data-view="campaign">Кампания</button>
       <button class="menu-button" type="button" data-view="profile">Профиль</button>
       <button class="logout" id="logoutButton" type="button">Выход</button>
     </nav>
@@ -1212,7 +1214,7 @@
 
     <div class="play-layout">
       <aside class="hero-card" aria-label="Герой">
-        <div class="avatar" id="heroAvatar" aria-hidden="true"></div>
+        <div class="avatar" id="heroAvatar" role="img" aria-label="Портрет некроманта"></div>
         <div>
           <h2 class="hero-name" id="heroName">Герой</h2>
           <p class="hero-class">Некромант</p>
@@ -1233,6 +1235,8 @@
     </section>
   </section>
 
+  <script src="/city/district.js?v=1"></script>
+  <script src="/city/expedition.js?v=1"></script>
   <script>
     const intro = document.getElementById("intro");
     const enterGame = document.getElementById("enterGame");
@@ -1671,50 +1675,6 @@
           <dd><strong>${value}</strong></dd>
         </div>
       `).join("");
-    }
-
-    function selectedBuilding() {
-      return state.buildings.find((building) => building.id === selectedBuildingId) || state.buildings[0];
-    }
-
-    function renderCity() {
-      const building = selectedBuilding();
-      selectedBuildingId = building?.id ?? null;
-
-      workPanel.innerHTML = `
-        <div class="work-head">
-          <h2 class="work-title">${viewTitles[activeView]}</h2>
-          <span class="work-meta">Некрорайон: Северный погост</span>
-        </div>
-        <div class="city-grid">
-          <div class="buildings">
-            ${state.buildings.map((item) => `
-              <button class="building ${item.id === selectedBuildingId ? "is-selected" : ""}" type="button" data-building-id="${item.id}">
-                <span class="building-icon">${buildingLetters[item.type] || "N"}</span>
-                <span class="building-name">${escapeHtml(item.name)}</span>
-                <span class="building-status">Ур. ${item.level} · ${escapeHtml(item.status)}</span>
-              </button>
-            `).join("")}
-          </div>
-          <aside class="building-panel">
-            <h3>${escapeHtml(building.name)}</h3>
-            <p>${escapeHtml(building.description)}</p>
-            <div class="stat-row"><span>Уровень</span><strong>${building.level}</strong></div>
-            <div class="stat-row"><span>Статус</span><strong>${escapeHtml(building.status)}</strong></div>
-            <div class="building-actions">
-              <button class="ghost-button" type="button">Улучшить</button>
-              <button class="ghost-button" type="button">Открыть</button>
-            </div>
-          </aside>
-        </div>
-      `;
-
-      workPanel.querySelectorAll("[data-building-id]").forEach((button) => {
-        button.addEventListener("click", () => {
-          selectedBuildingId = Number(button.dataset.buildingId);
-          renderCity();
-        });
-      });
     }
 
     function worldHexes() {
@@ -2174,6 +2134,11 @@
     }
 
     function renderWork() {
+      workPanel.dataset.view = activeView;
+      if (activeView === "campaign" || activeView === "army") {
+        openExpedition(workPanel, activeView);
+        return;
+      }
       if (activeView === "city" || activeView === "buildings") {
         renderCity();
       } else if (activeView === "map") {
@@ -2198,7 +2163,7 @@
       const date = new Date(Number(epoch) * 1000);
       if (!Number.isFinite(date.getTime())) return "";
       const day = chatCalendar.format(date);
-      const label = (day === today ? day + " · " : "") + chatClock.format(date);
+      const label = (day === today ? "" : day + " · ") + chatClock.format(date);
       return `<time datetime="${date.toISOString()}">${label}</time>`;
     }
 

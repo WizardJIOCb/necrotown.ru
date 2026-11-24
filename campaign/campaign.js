@@ -1,8 +1,31 @@
 const $ = id => document.getElementById(id);
+const embedded = parent !== window && new URLSearchParams(location.search).get('embed');
+function tellCity(type, data = {}) {
+  if (embedded) parent.postMessage({type, ...data}, location.origin);
+}
+if (embedded) {
+  document.documentElement.classList.add('embedded', embedded === 'guest' ? 'guest-mode' : 'city-mode');
+  new ResizeObserver(() => tellCity('expedition-size', {height: document.body.getBoundingClientRect().height})).observe(document.body);
+  window.addEventListener('message', event => {
+    if (event.origin !== location.origin || event.source !== parent || event.data?.type !== 'expedition-nav' || !save) return;
+    if (!save.battle && !busy) {
+      view = event.data.view === 'army' ? 'army' : 'map';
+      party = [...save.party];
+    }
+    render();
+  });
+}
 const symbols = {gate:'⚔',quarry:'⚒',ford:'≈',bridge:'♜',belfry:'♝',forge:'⚒',throne:'♛'};
 let atlas, save, nodes, account, field, fieldPromise, focus='gate', target=0, view='map', busy=false, party=[];
 const available = n => !n.from.length || n.from.some(id=>save.cleared.includes(id));
 const cleared = n => save.cleared.includes(n.id);
+const chapterNodes = id => atlas.nodes.filter(n=>n.chapter===id);
+const chapterComplete = id => chapterNodes(id).every(cleared);
+const chapterOpen = chapter => !chapter.requires || chapterComplete(chapter.requires);
+function chapterEntry(id) {
+  const places=chapterNodes(id);
+  return (places.find(n=>!cleared(n)&&available(n))||places[places.length-1]).id;
+}
 const apiPath='/api/campaign.php';
 
 async function request(change) {
@@ -15,6 +38,7 @@ async function request(change) {
       if(data.save){save=data.save;view=save.battle?'battle':'map';render();}
       throw Error(data.error);
     }
+    if (account && save && data.save.cleared.length > save.cleared.length) tellCity('expedition-reward');
     save=data.save; account=data.account;
     return true;
   } catch(e) {
@@ -25,11 +49,11 @@ async function request(change) {
 
 function mapRoads() {
   const c=$('roads'), ctx=c.getContext('2d'), w=c.clientWidth, h=c.clientHeight;
-  if(!w||!h||!atlas)return;
+  if(!w||!h||!nodes||!save)return;
   const scale=Math.min(devicePixelRatio,2);
   c.width=Math.round(w*scale); c.height=Math.round(h*scale); ctx.scale(scale,scale);
   ctx.lineCap='round';
-  for(const node of atlas.nodes) for(const id of node.from) {
+  for(const node of chapterNodes(nodes[focus].chapter)) for(const id of node.from) {
     const prev=nodes[id], x=prev.x*w/100,y=prev.y*h/100,dx=node.x*w/100,dy=node.y*h/100;
     ctx.beginPath();ctx.moveTo(x,y);ctx.bezierCurveTo(x+(dx-x)*.45,y,dx-(dx-x)*.48,dy,dx,dy);
     ctx.setLineDash([]);ctx.lineWidth=5;ctx.strokeStyle='#201d15b0';ctx.stroke();
@@ -39,15 +63,23 @@ function mapRoads() {
 }
 function mapPage() {
   const chosen=nodes[focus];
-  $('pins').innerHTML=atlas.nodes.map(n=>{
+  const chapter=atlas.chapters.find(c=>c.id===chosen.chapter);
+  $('chart').style.setProperty('--atlas-art','url("'+chapter.art+'")');
+  $('chapters').innerHTML=atlas.chapters.map((c,i)=>{
+    const open=chapterOpen(c), selected=c.id===chapter.id;
+    const progress=chapterNodes(c.requires||c.id);
+    const hint=open?'':' · '+progress.filter(cleared).length+'/'+progress.length+' на первой карте';
+    return '<button type="button" data-chapter="'+c.id+'" aria-pressed="'+selected+'" '+(open?'':'disabled')+'>'+['I','II'][i]+'. '+c.name+hint+'</button>';
+  }).join('');
+  $('pins').innerHTML=chapterNodes(chosen.chapter).map(n=>{
     const status=cleared(n)?'cleared':available(n)?'available':'locked';
     const label=cleared(n)?'Пройдено':available(n)?'Доступно':'Закрыто';
-    return '<button data-node="'+n.id+'" aria-label="'+n.name+' · '+label+'" aria-pressed="'+(focus===n.id)+'" class="pin '+status+(focus===n.id?' selected':'')+'" style="left:'+n.x+'%;top:'+n.y+'%">'+(cleared(n)?'✓':symbols[n.id])+'<span>'+n.name+'</span></button>';
+    return '<button data-node="'+n.id+'" aria-label="'+n.name+' · '+label+'" aria-pressed="'+(focus===n.id)+'" class="pin '+status+(focus===n.id?' selected':'')+'" style="left:'+n.x+'%;top:'+n.y+'%">'+(cleared(n)?'✓':n.symbol||symbols[n.id])+'<span>'+n.name+'</span></button>';
   }).join('');
   const info=cleared(chosen)?'Точка пройдена':available(chosen)?'Доступен штурм':'Откроется после: '+chosen.from.map(id=>nodes[id].name).join(' или ');
-  const final=cleared(chosen)&&chosen.id==='throne';
-  $('brief').innerHTML='<div><div class="tag">'+chosen.region+' · '+info+'</div><h2>'+chosen.name+'</h2><p>'+(final?'Корона возвращена в Некротаун. Уцелевшие отряды открыли дорогу в город.':chosen.story)+'</p><small>Противники · '+chosen.enemies.map(id=>atlas.units[id].name).join(', ')+'　/　'+chosen.reward+' душ</small></div>'+
-    (!cleared(chosen)&&available(chosen)?'<button class="action" data-start>Начать бой →</button>':'');
+  const replay=cleared(chosen);
+  $('brief').innerHTML='<div><div class="tag">'+chosen.region+' · '+info+'</div><h2>'+chosen.name+'</h2><p>'+((replay&&chosen.ending)||chosen.story)+'</p><small>Противники · '+chosen.enemies.map(id=>atlas.units[id].name).join(', ')+'　/　'+(replay?'Награда уже получена':chosen.reward+' душ')+'</small></div>'+
+    (available(chosen)?'<button class="action" data-start>'+(replay?'Сыграть ещё раз':'Начать бой →')+'</button>':'');
   mapRoads();
 }
 function armyPage() {
@@ -58,7 +90,7 @@ function armyPage() {
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
-  if(!fieldPromise)fieldPromise=import('./field.js?v=camera2').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
+  if(!fieldPromise)fieldPromise=import('./field.js?v=tide1').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
     $('fallback').hidden=false;return null;
   });
   field=await fieldPromise;
@@ -82,8 +114,10 @@ function battlePage() {
   let body='<div class="hud"><strong>Здоровье легиона · '+b.hp+' / '+b.max+'</strong><span>Заряды эфира　'+b.charge+' / 3</span></div><div class="hp"><i style="width:'+(100*b.hp/b.max)+'%"></i></div>';
   if(end) {
     const victory=b.status==='won', newUnit=b.node==='quarry'?'Костолом':b.node==='ford'?'Лучница брода':'';
-    const outcome=victory?'Добыча · '+n.reward+' душ.'+(newUnit?' В отряде новый союзник: '+newUnit+'.':''):'Ответный удар врагов снял последнее здоровье легиона.';
-    body+='<div class="result"><div><div class="tag">'+(victory?'Победа':'Поражение')+'</div><h2>'+(victory?(b.node==='throne'?'Престол ваш':'Путь открыт'):'Легион разбит')+'</h2><p>'+outcome+'</p>'+(!victory?'<p data-order-log></p>':'')+'</div><button class="action" data-leave>К карте похода →</button></div>';
+    const nextChapter=victory&&!b.replay&&atlas.chapters.find(c=>c.requires===n.chapter&&chapterOpen(c));
+    let outcome='Ответный удар врагов снял последнее здоровье легиона.';
+    if(victory)outcome=b.replay?'Награда за эту точку уже получена.':'Добыча · '+n.reward+' душ.'+(newUnit?' В отряде новый союзник: '+newUnit+'.':'');
+    body+='<div class="result"><div><div class="tag">'+(victory?'Победа':'Поражение')+'</div><h2>'+(victory?(n.victory||(b.replay?'Бой выигран':'Путь открыт')):'Легион разбит')+'</h2><p>'+outcome+'</p>'+(!victory?'<p data-order-log></p>':'')+'</div><button class="action" data-leave>'+(nextChapter?nextChapter.name+' →':'К карте похода →')+'</button></div>';
   } else {
     body+='<div class="tag">Цель · следующий удар врага</div><div class="target-row">'+b.foes.map((f,i)=>'<button class="target" data-target="'+i+'" aria-pressed="'+(i===target)+'" '+(!f.hp?'disabled':'')+'><strong>'+atlas.units[f.kind].name+'</strong><small>'+f.hp+'/'+f.max+' здоровья · '+(f.hp?'удар '+f.intent:'повержен')+'</small></button>').join('')+'</div>';
     body+='<div class="card-row">'+[
@@ -103,12 +137,15 @@ function render() {
   for(const name of ['map','army','battle'])$(name).hidden=name!==view;
   $('map-tab').disabled=combat;$('army-tab').disabled=combat;
   $('map-tab').classList.toggle('active',view==='map');$('army-tab').classList.toggle('active',view==='army');
-  $('title').textContent=combat?nodes[save.battle.node].name:view==='army'?'Состав отряда':'Престол праха';
-  $('eyebrow').textContent=combat?'Битва за Некротаун':view==='army'?'Лагерь похода':save.cleared.includes('throne')?'Кампания пройдена':'Военная кампания';
-  $('progress').innerHTML='<span class="ticks" aria-hidden="true">'+atlas.nodes.map((_,i)=>'<i class="'+(i<save.cleared.length?'on':'')+'"></i>').join('')+'</span><span>'+save.cleared.length+' / '+atlas.nodes.length+' точек</span>';
+  const chapter=atlas.chapters.find(c=>c.id===nodes[combat?save.battle.node:focus].chapter);
+  const places=chapterNodes(chapter.id), count=places.filter(cleared).length;
+  $('title').textContent=combat?nodes[save.battle.node].name:view==='army'?'Состав отряда':chapter.name;
+  $('eyebrow').textContent=combat?'Битва за Некротаун':view==='army'?'Лагерь похода':count===places.length?'Карта пройдена':'Военная кампания';
+  $('progress').innerHTML='<span class="ticks" aria-hidden="true">'+places.map(n=>'<i class="'+(cleared(n)?'on':'')+'"></i>').join('')+'</span><span>'+count+' / '+places.length+' точек</span>';
   $('account').textContent=account?'Поход сохранён у героя':'Гостевой поход · сохранение в этой сессии';
   if(!combat)field?.hide();
   if(view==='map')mapPage();else if(view==='army')armyPage();else battlePage();
+  tellCity('expedition-view', {view});
 }
 function selectMap(id,scroll=false) {
   focus=id;mapPage();
@@ -138,6 +175,7 @@ document.addEventListener('click',async event=>{
     btn.setAttribute('aria-pressed',String(on));btn.textContent=on?'Звук вкл.':'Звук выкл.';if(on)playSound('guard');
   }else if(btn.id==='map-tab'){view='map';render();}
   else if(btn.id==='army-tab'){view='army';party=[...save.party];render();}
+  else if(d.chapter){focus=chapterEntry(d.chapter);render();selectMap(focus,true);}
   else if(d.node)selectMap(d.node);
   else if(d.start!==undefined){
     if(await request({action:'start',node:focus})){target=0;render();}
@@ -160,22 +198,24 @@ document.addEventListener('click',async event=>{
     btn.outerHTML='<button class="secondary" data-leave>Подтвердить отступление</button> <button class="secondary" data-stay>Остаться</button>';
   }else if(d.stay!==undefined)battlePage();
   else if(d.leave!==undefined){
-    const prev=save.battle.node;
+    const last=save.battle, prev=last.node;
     if(await request({action:'leave'})){
-      focus=prev;view='map';render();
-      const next=atlas.nodes.find(n=>n.from.includes(prev)&&!cleared(n)&&available(n));
-      selectMap(prev!=='throne'&&next?next.id:prev,true);
+      const nextChapter=last.status==='won'&&!last.replay&&atlas.chapters.find(c=>c.requires===nodes[prev].chapter&&chapterOpen(c));
+      const next=last.status==='won'&&!last.replay&&chapterNodes(nodes[prev].chapter).find(n=>n.from.includes(prev)&&!cleared(n)&&available(n));
+      focus=nextChapter?chapterEntry(nextChapter.id):next?next.id:prev;
+      view='map';render();selectMap(focus,true);
     }
   }
 });
 async function init() {
   try {
-    const res=await fetch('atlas.json');if(!res.ok)throw Error('Карта недоступна.');
+    const res=await fetch('atlas.json?v=tide1');if(!res.ok)throw Error('Карта недоступна.');
     atlas=await res.json();nodes=Object.fromEntries(atlas.nodes.map(n=>[n.id,n]));
     if(await request()){
-      focus=atlas.nodes.find(n=>available(n)&&!cleared(n))?.id||'throne';
+      focus=save.battle?.node||chapterEntry(atlas.chapters.filter(chapterOpen).at(-1).id);
       view=!save.battle&&location.hash==='#army'?'army':'map';party=[...save.party];
       render();if(view==='map')selectMap(focus,true);
+      tellCity('expedition-ready');
     }
   }catch(e){$('notice').textContent=e.message;}
 }

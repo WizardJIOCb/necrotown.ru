@@ -3,10 +3,6 @@ import * as W from './vendor/cinderwatch-scene.js';
 const {THREE, R, CAM, FX, LT, KIT} = W;
 const cameraZoom = {min:75, max:350, initial:200, step:25};
 const zoomKey = 'necrotown.battle.zoom';
-const stages = {
-  gate: [4,'ashen'], quarry: [31,'ashen'], ford:[17,'fen'], bridge:[12,'frost'],
-  belfry:[21,'ashen'], forge:[35,'ember'], throne:[4,'ember']
-};
 
 function dressBoard(board) {
   const beacon=board.beacon;
@@ -74,7 +70,7 @@ export function createField(canvas,units) {
     W.clearFX();W.clearDebris();FX.flames.length=0;LT.emitters.length=0;
     for(const spot of LT.spots){spot.owner=null;spot.want=null;spot.fade=0;}
     if(board){board.gem?.material.dispose();W.disposeBoard(board);}
-    const [seed,biome]=stages[node.id];
+    const [seed,biome]=node.scene;
     W.BIOME.start=W.BIOMES.findIndex(item=>item.key===biome);
     board=W.buildBoard(seed,0);R.scene.add(board.group);dressBoard(board);stage=node.id;
     panLimit=Math.max(...board.chunks.map(chunk=>chunk.cx));

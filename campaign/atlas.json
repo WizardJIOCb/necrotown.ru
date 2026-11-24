@@ -1,4 +1,18 @@
 {
+  "chapters": [
+    {
+      "id": "ash",
+      "name": "Престол праха",
+      "art": "ashen-marches.webp",
+      "requires": null
+    },
+    {
+      "id": "tide",
+      "name": "Берег утонувших",
+      "art": "tide-coast.webp",
+      "requires": "ash"
+    }
+  ],
   "nodes": [
     {
       "id": "gate",
@@ -13,7 +27,12 @@
         "archer"
       ],
       "biome": "ash",
-      "reward": 12
+      "reward": 12,
+      "chapter": "ash",
+      "scene": [
+        4,
+        "ashen"
+      ]
     },
     {
       "id": "quarry",
@@ -30,7 +49,12 @@
         "sentry"
       ],
       "biome": "quarry",
-      "reward": 16
+      "reward": 16,
+      "chapter": "ash",
+      "scene": [
+        31,
+        "ashen"
+      ]
     },
     {
       "id": "ford",
@@ -48,7 +72,12 @@
         "archer"
       ],
       "biome": "marsh",
-      "reward": 16
+      "reward": 16,
+      "chapter": "ash",
+      "scene": [
+        17,
+        "fen"
+      ]
     },
     {
       "id": "bridge",
@@ -66,7 +95,12 @@
         "archer"
       ],
       "biome": "frost",
-      "reward": 20
+      "reward": 20,
+      "chapter": "ash",
+      "scene": [
+        12,
+        "frost"
+      ]
     },
     {
       "id": "belfry",
@@ -84,7 +118,12 @@
         "warden"
       ],
       "biome": "ruins",
-      "reward": 24
+      "reward": 24,
+      "chapter": "ash",
+      "scene": [
+        21,
+        "ashen"
+      ]
     },
     {
       "id": "forge",
@@ -102,7 +141,12 @@
         "sentry"
       ],
       "biome": "ember",
-      "reward": 24
+      "reward": 24,
+      "chapter": "ash",
+      "scene": [
+        35,
+        "ember"
+      ]
     },
     {
       "id": "throne",
@@ -121,7 +165,177 @@
         "sentry"
       ],
       "biome": "throne",
-      "reward": 40
+      "reward": 40,
+      "chapter": "ash",
+      "scene": [
+        4,
+        "ember"
+      ],
+      "ending": "Корона возвращена в Некротаун. Из-за моря ей отвечает синий огонь маяка.",
+      "victory": "Престол ваш"
+    },
+    {
+      "id": "harbor",
+      "name": "Соляная гавань",
+      "region": "Внешний рейд",
+      "story": "После падения короля в гавань пришёл корабль без команды. Освободите причал: в его трюме лежит карта маяка, который поднимает со дна затонувший флот.",
+      "x": 13,
+      "y": 55,
+      "from": [],
+      "enemies": [
+        "corsair",
+        "archer",
+        "sentry"
+      ],
+      "chapter": "tide",
+      "scene": [
+        37,
+        "fen"
+      ],
+      "reward": 22,
+      "symbol": "⚓"
+    },
+    {
+      "id": "headland",
+      "name": "Дозор на мысу",
+      "region": "Северный фарватер",
+      "story": "Дозорные отмечают ваш путь сигнальными огнями. Снимите стрелков, пока палач готовит удар.",
+      "x": 29,
+      "y": 23,
+      "from": [
+        "harbor"
+      ],
+      "enemies": [
+        "harpooner",
+        "brute",
+        "harpooner"
+      ],
+      "chapter": "tide",
+      "scene": [
+        47,
+        "frost"
+      ],
+      "reward": 24,
+      "symbol": "♜"
+    },
+    {
+      "id": "wrecks",
+      "name": "Кладбище судов",
+      "region": "Южные отмели",
+      "story": "Между пробитыми корпусами застрял костяной буксир. Его цепь ведёт к шлюзу, а мёртвые матросы всё ещё держат лебёдку.",
+      "x": 28,
+      "y": 77,
+      "from": [
+        "harbor"
+      ],
+      "enemies": [
+        "corsair",
+        "wraith",
+        "corsair"
+      ],
+      "chapter": "tide",
+      "scene": [
+        52,
+        "dunes"
+      ],
+      "reward": 24,
+      "symbol": "⚓"
+    },
+    {
+      "id": "sluice",
+      "name": "Приливный шлюз",
+      "region": "Середина пролива",
+      "story": "Захватите ворот шлюза, пока вода не отрезала дорогу. За створками расходятся тропы к монастырю и к нижним ступеням маяка.",
+      "x": 48,
+      "y": 49,
+      "from": [
+        "headland",
+        "wrecks"
+      ],
+      "enemies": [
+        "warden",
+        "harpooner",
+        "cantor"
+      ],
+      "chapter": "tide",
+      "scene": [
+        63,
+        "frost"
+      ],
+      "reward": 30,
+      "symbol": "⚙"
+    },
+    {
+      "id": "abbey",
+      "name": "Соляная обитель",
+      "region": "Верхние скалы",
+      "story": "Певчие зовут корабли на рифы. На каждом третьем ходу их хор бьёт сильнее: выберите, кого заставить замолчать первым.",
+      "x": 68,
+      "y": 24,
+      "from": [
+        "sluice"
+      ],
+      "enemies": [
+        "cantor",
+        "warden",
+        "cantor"
+      ],
+      "chapter": "tide",
+      "scene": [
+        74,
+        "ashen"
+      ],
+      "reward": 32,
+      "symbol": "♝"
+    },
+    {
+      "id": "steps",
+      "name": "Лестница костей",
+      "region": "Нижние скалы",
+      "story": "В скале высечена лестница для лодок с утопленниками. Прорвитесь через охрану, пока гарпунщики держат верхнюю площадку.",
+      "x": 69,
+      "y": 75,
+      "from": [
+        "sluice"
+      ],
+      "enemies": [
+        "brute",
+        "corsair",
+        "harpooner"
+      ],
+      "chapter": "tide",
+      "scene": [
+        85,
+        "fen"
+      ],
+      "reward": 32,
+      "symbol": "⚔"
+    },
+    {
+      "id": "beacon",
+      "name": "Маяк утопленников",
+      "region": "Последний огонь",
+      "story": "Погасите огонь, прежде чем флот войдёт в Некротаун. Три хода Смотритель собирает прилив, на четвёртом обрушивает его на легион.",
+      "x": 89,
+      "y": 47,
+      "from": [
+        "abbey",
+        "steps"
+      ],
+      "enemies": [
+        "keeper",
+        "cantor",
+        "corsair"
+      ],
+      "chapter": "tide",
+      "scene": [
+        96,
+        "frost"
+      ],
+      "reward": 54,
+      "symbol": "♛",
+      "ending": "Синий огонь погас. Корабли легли на дно, и впервые за много лет в гавань вошли живые рыбаки.",
+      "victory": "Маяк погас"
     }
   ],
   "units": {
@@ -211,6 +425,38 @@
       "attack": 12,
       "stat": 62,
       "gear": "crown",
+      "description": ""
+    },
+    "corsair": {
+      "name": "Утопший корсар",
+      "model": "skel",
+      "attack": 7,
+      "stat": 26,
+      "gear": "sword",
+      "description": ""
+    },
+    "harpooner": {
+      "name": "Гарпунщик",
+      "model": "foot",
+      "attack": 9,
+      "stat": 21,
+      "gear": "bow",
+      "description": ""
+    },
+    "cantor": {
+      "name": "Певчий глубин",
+      "model": "skel",
+      "attack": 7,
+      "stat": 25,
+      "gear": "seer",
+      "description": ""
+    },
+    "keeper": {
+      "name": "Смотритель прилива",
+      "model": "giant",
+      "attack": 11,
+      "stat": 78,
+      "gear": "seer",
       "description": ""
     }
   }

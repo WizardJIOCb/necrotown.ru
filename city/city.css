@@ -1,0 +1,98 @@
+body.is-game {
+  --panel: #1a1d19; --border: #464332; --gold: #dfc28a; --text: #f0eadc; --muted: #b8b4a6;
+  background: radial-gradient(ellipse at top, #34372c, transparent 68%), #10130f;
+}
+body.is-game::before {display:none}
+body.is-game .game-shell {
+  max-width: 1720px; min-height: 0; margin:auto; padding: 12px clamp(12px,2vw,34px) 24px;
+  gap:12px; grid-template-rows:auto auto auto auto;
+}
+.top-menu {
+  display:flex; flex-wrap:wrap; gap:2px; align-items:center;
+  border:0; border-bottom:1px solid #756241; border-radius:0; background:transparent; padding:0 0 8px;
+}
+.city-brand {display:flex; align-items:center; gap:8px; margin-right:clamp(12px,3vw,56px); color:#f0dfb9; font:bold 28px Georgia,serif; letter-spacing:-.045em}
+.city-brand img {object-fit:contain; mix-blend-mode:screen}
+.top-menu .menu-button,.top-menu .logout {min-width:0; min-height:40px; padding:8px clamp(8px,1vw,16px); border-radius:2px; font:600 14px Arial,sans-serif; letter-spacing:.01em; text-transform:none; color:#c2c0b3; background:transparent; box-shadow:none; border:1px solid transparent}
+.top-menu .logout {margin-left:auto}
+.top-menu .menu-button:is(:hover,:focus-visible),.top-menu .logout:hover {background:#303125;color:#fff0cf}
+.top-menu .menu-button.is-active {border-color:#796645; background:#363226; color:#f2dca9}
+.resource-line {grid-template-columns:repeat(5,minmax(0,1fr)); gap:0; border-radius:3px; padding:2px; background:#1b1e18}
+.resource {background:transparent; border:0; border-radius:0; min-width:0; padding:5px clamp(6px,1.5vw,24px); gap:8px; grid-template-columns:32px 1fr}
+.resource + .resource {border-left:1px solid #484536}
+.resource-name {color:#bdb6a1;font-weight:600;letter-spacing:.095em;font-size:10px}
+.resource-value {color:#f4e8cb;font:600 20px Georgia,serif}
+.resource .resource-icon {width:32px;height:32px;transform:none;clip-path:none;border-radius:0;background:var(--resource-art) center/contain no-repeat;box-shadow:none;mix-blend-mode:screen}
+.resource-icon::before,.resource-icon::after {display:none}
+.icon-bones {--resource-art:url(bones.webp)} .icon-souls {--resource-art:url(souls.webp)} .icon-iron {--resource-art:url(iron.webp)} .icon-ether {--resource-art:url(ether.webp)} .icon-plague {--resource-art:url(plague.webp)}
+.play-layout {grid-template-columns:clamp(174px,15vw,238px) minmax(0,1fr); align-items:start}
+.hero-card,.work-panel,.chat-panel {border:1px solid var(--border);border-radius:4px;background:linear-gradient(140deg,#23261f,#181b16 60%);box-shadow:none}
+.hero-card {padding:12px;align-self:start}
+#heroAvatar {aspect-ratio:4/5;border-radius:2px;background:#22261f url(regent.webp) center 32%/cover;border-color:#766240;box-shadow:inset 0 0 0 3px #17191366}
+.hero-name {overflow-wrap:anywhere;font-weight:500;color:#f5e6c7}
+.hero-class {font-size:10px;letter-spacing:.15em}
+.stat-list {gap:0}
+.work-panel {min-height:340px}
+.work-panel:is([data-view="city"],[data-view="buildings"],[data-view="army"],[data-view="campaign"]) {padding:0;overflow:hidden}
+.district-banner {padding:22px clamp(16px,2.3vw,40px);min-height:clamp(104px,10vw,164px);display:flex;flex-direction:column;justify-content:flex-end;border-bottom:1px solid #746247;background:linear-gradient(90deg,#10160ff2,transparent 66%),linear-gradient(0deg,#10151085,transparent 50%),url(skyline.webp) center 48%/cover}
+.district-banner span {font-size:10px;letter-spacing:.19em;font-weight:700;text-transform:uppercase;color:#e4c58e}
+.district-banner h1 {margin:4px 0 0;color:#f8efd9;font:500 clamp(30px,3.4vw,55px)/1.05 Georgia,serif;letter-spacing:-.035em}
+.district-body {display:grid;grid-template-columns:minmax(0,1fr) clamp(170px,17vw,245px);gap:16px;padding:clamp(12px,1.4vw,24px)}
+.district-list {min-width:0}
+.district-list h2,.district-detail h3 {margin:0 0 12px;color:#ebe0c9;font:500 clamp(21px,1.8vw,30px)/1.13 Georgia,serif;letter-spacing:-.025em}
+.place-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.place-card {isolation:isolate;position:relative;overflow:hidden;min-width:0;min-height:134px;aspect-ratio:1.37;padding:0;text-align:left;border:1px solid #514c39;border-radius:3px;background:#23251f;color:#fff5df;cursor:pointer}
+.place-card img {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 200ms ease}
+.place-card::after {content:"";position:absolute;inset:0;background:linear-gradient(0deg,#0a0d0afc,#0a0d0ad9 14%,transparent 61%);pointer-events:none}
+.place-copy {position:absolute;z-index:1;bottom:11px;left:12px;right:8px;display:grid;gap:4px;text-shadow:0 1px 3px #000}
+.place-copy strong {font:600 clamp(17px,1.4vw,24px)/1.07 Georgia,serif}
+.place-copy small {color:#dfd4ba;font:500 11px/1.25 Arial,sans-serif}
+.place-card:hover img {transform:scale(1.035)}
+.place-card[aria-pressed="true"] {border-color:#edcb83;box-shadow:0 0 0 1px #d2b579}
+.place-card:focus-visible,.top-menu button:focus-visible {outline:2px solid #ffe1a4;outline-offset:2px}
+.district-detail {align-self:start;overflow:hidden;border:1px solid #484737;border-radius:3px;background:#1a1c17}
+.district-detail img {width:100%;height:clamp(115px,12vw,185px);object-fit:cover;display:block;border-bottom:1px solid #484737}
+.district-detail>div {padding:14px}
+.district-detail h3 {font-size:24px;margin:0 0 8px}
+.district-detail p {color:#c9c4b3;margin:0 0 12px;font-size:14px;line-height:1.5}
+.district-detail .stat-row {font-size:12px}
+.chat-panel {padding:14px}
+.chat-title {color:#eddfbd;font:500 22px Georgia,serif;letter-spacing:0;text-transform:none}
+.chat-send {background:#63563b;box-shadow:none;color:#fff2d5}
+.expedition-frame {display:block;background:#1b1f19;width:100%;height:460px;border:0}
+.guest-expedition {color:#ede6d4;padding:0;width:min(1180px,98vw);max-width:98vw;max-height:95dvh;overflow:auto;border:1px solid #796744;background:#1b1f19}
+.guest-expedition::backdrop {background:#080a08df}
+.guest-return {color:#e4cf9e;background:#24271f;border:0;border-bottom:1px solid #55513d;width:100%;padding:12px 18px;text-align:left;cursor:pointer}
+@media(max-width:1160px) {
+  .district-body {grid-template-columns:minmax(0,1fr)}
+  .district-detail {display:grid;grid-template-columns:130px 1fr}
+  .district-detail img {height:100%;max-height:170px;border:0}
+  .district-detail .stat-row {display:inline-flex;gap:8px;margin-right:14px;padding:3px 0}
+}
+@media(max-width:900px) {
+  .play-layout {grid-template-columns:minmax(0,1fr)}
+  .hero-card {display:grid;grid-template-columns:74px minmax(0,1fr);align-items:center;padding:8px 12px;gap:12px}
+  #heroAvatar {aspect-ratio:1;background-position:center 25%}
+  .hero-name {font-size:20px;margin:0}
+  .hero-class {margin:3px 0 6px}
+  .stat-list {display:flex;flex-wrap:wrap;gap:4px 14px}
+  .hero-card .stat-row {display:flex;gap:5px;font-size:11px;padding:0;border:0}
+  .hero-card dd {margin:0}
+  .top-menu {gap:1px}.city-brand {font-size:23px;margin-right:8px}
+  .place-card {aspect-ratio:1.6}
+}
+@media(max-width:600px) {
+  body.is-game .game-shell {padding:6px;gap:8px}
+  .city-brand {width:100%;padding-left:4px}.city-brand img {width:26px;height:26px}
+  .top-menu .menu-button,.top-menu .logout {min-height:35px;padding:6px;font-size:12px}
+  .resource {display:flex;gap:4px;padding:4px;min-height:42px}
+  .resource .resource-icon {width:22px;height:24px;flex:none}
+  .resource-name {font-size:9px;letter-spacing:0}.resource-value {font-size:16px}
+  .place-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .place-card {min-height:126px}.place-copy {left:8px;bottom:8px}
+  .district-body {padding:10px;gap:10px}.district-detail {grid-template-columns:84px 1fr}
+  .district-detail>div {padding:9px}.district-detail img {max-height:none}
+  .district-detail h3 {font-size:20px}.district-detail p {font-size:13px}
+  .chat-form {grid-template-columns:minmax(0,1fr) auto}
+}
+@media(prefers-reduced-motion:reduce) {.place-card img {transition:none}}
