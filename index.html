@@ -1150,7 +1150,7 @@
     }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
-  <link rel="stylesheet" href="/city/city.css?v=illustrations1">
+  <link rel="stylesheet" href="/city/city.css?v=resource-hints1">
   <link rel="stylesheet" href="/city/player-view.css?v=1">
   <link rel="stylesheet" href="/city/auth.css?v=gate2">
   <link rel="stylesheet" href="/city/profile.css?v=scroll1">
@@ -1247,6 +1247,7 @@
   </section>
 
   <script src="/city/player-view.js?v=1"></script>
+  <script src="/city/resource-hints.js?v=1"></script>
   <script src="/city/development.js?v=illustrations1"></script>
   <script src="/city/district.js?v=admin1"></script>
   <script src="/city/expedition.js?v=intro2"></script>
@@ -1665,15 +1666,7 @@
     }
 
     function renderResources() {
-      resourceLine.innerHTML = resources.map(([key, label, icon]) => `
-        <div class="resource">
-          <span class="resource-icon ${icon}" aria-hidden="true"></span>
-          <span>
-            <span class="resource-name">${label}</span>
-            <strong class="resource-value">${state.resources[key] ?? 0}</strong>
-          </span>
-        </div>
-      `).join("");
+      renderResourceHints(resourceLine, resources, state);
     }
 
     function renderHero() {
