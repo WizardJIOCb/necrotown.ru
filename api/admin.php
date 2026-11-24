@@ -6,7 +6,7 @@ require __DIR__.'/admin_rules.php';
 
 header('Cache-Control: private, no-store');
 $actor = require_user_id();
-if (!is_game_admin($actor)) json_response(['ok'=>false,'error'=>'Доступ только для администраторов.'],403);
+if (playing_as_character() || !is_game_admin($actor)) json_response(['ok'=>false,'error'=>'Доступ только из своего профиля администратора.'],403);
 $_SESSION['admin_token'] ??= bin2hex(random_bytes(32));
 $sections = [
     'heroes'=>'Герои','accounts'=>'Аккаунты','resources'=>'Ресурсы игроков','buildings'=>'Постройки игроков',
@@ -22,6 +22,9 @@ function admin_list(string $section, string $search, int $page): array
     if ($section==='art') {
         $labels = ['regent'=>'Портрет некроманта','skyline'=>'Панорама города','crest'=>'Герб города','bones'=>'Кости','souls'=>'Души','iron'=>'Железо','ether'=>'Эфир','plague'=>'Мор'];
         foreach (['templates','houses'] as $group) foreach (content_group($group) as $id=>$item) $labels[$id]=$item['name'];
+        $labels['login-gate']='Ворота на экране входа';
+        foreach (content_group('research') as $id=>$item) $labels['study-'.$id]='Изучение · '.$item['name'];
+        foreach (['blade','shield','seer','breaker','ranger'] as $id) $labels['ally-'.$id]='Армия · '.content_group('units')[$id]['name'];
         foreach (content_group('chapters') as $chapter) $labels[pathinfo($chapter['art'],PATHINFO_FILENAME)]=$chapter['name'];
         $rows=[];
         foreach (art_paths() as $id=>$path) {
@@ -102,7 +105,7 @@ try {
     if (!$post) require_method('GET');
     $input=$post?read_json():$_GET;
     $section=$input['section']??'';
-    if (!$post && $section==='') json_response(['ok'=>true,'sections'=>$sections,'token'=>$_SESSION['admin_token']]);
+    if (!$post && $section==='') json_response(['ok'=>true,'sections'=>$sections,'ownerId'=>$actor,'token'=>$_SESSION['admin_token']]);
     admin_check(is_string($section) && isset($sections[$section]),'Неизвестный раздел.');
     $id=(string)($input['id']??'');
     if (!$post && $id==='') {

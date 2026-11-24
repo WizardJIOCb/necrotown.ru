@@ -156,7 +156,12 @@ body.is-game .game-shell {
 .city-development p,.tech-list p,.dev-meta,.profile-note {font-size:13px;color:#c5c1af;line-height:1.45;margin:5px 0 9px}
 button[data-development],.profile-actions button,.password-form button {background:#49432e;color:#f1dfb8;border:1px solid #857249;border-radius:3px;padding:7px 11px;cursor:pointer}
 button[data-development]:disabled {cursor:default;opacity:.65}
-.tech-list {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(235px,100%),1fr));gap:10px}
+.tech-list {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr));gap:10px}
 .tech-list small {display:block;color:#c4b58d;margin-bottom:10px}
 [data-dev-notice] {margin:0 14px 10px;color:#dfc891}
 [data-dev-notice]:empty {display:none}
+
+.tech-list article {display:flex;flex-direction:column;min-width:0;overflow:hidden;padding:0}
+.study-art {display:block;width:100%;aspect-ratio:1.8;object-fit:cover;border-bottom:1px solid var(--border)}
+.study-copy {display:flex;flex:1;flex-direction:column;align-items:flex-start;padding:14px}
+.study-copy small {margin-top:auto;padding-top:5px}

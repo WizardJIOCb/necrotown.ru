@@ -20,7 +20,7 @@ function options(select, values, current) {
 }
 async function request(params, change, token) {
   const config=change?{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':token},body:JSON.stringify(change)}:{cache:'no-store'};
-  const response=await fetch('/api/admin.php?'+new URLSearchParams(params),config);
+  const response=await playerView.apiFetch('/api/admin.php?'+new URLSearchParams(params),config);
   const result=await response.json();
   if (!response.ok || !result.ok) throw Error(result.error || 'Не удалось выполнить запрос.');
   return result;
@@ -94,6 +94,14 @@ export async function openAdmin(host, refreshCity) {
       const controls=element('div');controls.className='admin-controls';editor.append(controls);
       const save=element('button','Сохранить');save.type='submit';controls.append(save);
       const reload=element('button','Загрузить заново');reload.type='button';reload.onclick=()=>edit(item);controls.append(reload);
+      if (['heroes','accounts'].includes(section) && Number(item.id)!==session.ownerId) {
+        const enter=element('button','Войти за персонажа');enter.type='button';controls.append(enter);
+        enter.onclick=async()=>{
+          enter.disabled=true;
+          try {await playerView.enter(item.id,session.token);}
+          catch(e) {if(active()) status.textContent=e.message;enter.disabled=false;}
+        };
+      }
       async function submit(action) {
         if (save.disabled || !active()) return;
         save.disabled=true;status.textContent='Сохранение…';

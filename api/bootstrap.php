@@ -73,7 +73,23 @@ function require_method(string $method): void
 
 function current_user_id(): ?int
 {
-    return isset($_SESSION['user_id']) ? (int) $_SESSION['user_id'] : null;
+    $owner = isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : null;
+    $key = $_SERVER['HTTP_X_PLAYER_VIEW'] ?? '';
+    if ($key === '') return $owner;
+    $view = $_SESSION['player_views'][$key] ?? null;
+    if ($view && $owner === $view['owner'] && $view['until'] > time() && is_game_admin($owner)) {
+        $q = db()->prepare('SELECT id FROM users WHERE id=?');
+        $q->execute([$view['target']]);
+        if ($q->fetchColumn()) return $view['target'];
+    }
+    unset($_SESSION['player_views'][$key]);
+    header('X-Player-View-Expired: 1');
+    json_response(['ok'=>false,'error'=>'Вход за персонажа завершён.'],403);
+}
+
+function playing_as_character(): bool
+{
+    return ($_SERVER['HTTP_X_PLAYER_VIEW'] ?? '') !== '';
 }
 
 function require_user_id(): int
@@ -132,13 +148,13 @@ function game_state(int $userId): array
 
     return [
         'development' => development_view(city_progress($userId), $buildings),
-        'isAdmin' => is_game_admin($userId),
+        'isAdmin' => !playing_as_character() && is_game_admin($userId),
         'artVersions' => art_versions(),
         'cityCatalog' => ['city' => content_group('city'), 'houses' => content_group('houses')],
         'hero' => [
             'id' => (int) $hero['id'],
             'username' => $hero['username'],
-            'email' => $hero['email'],
+            'email' => playing_as_character() ? null : $hero['email'],
             'name' => $hero['name'],
             'level' => (int) $hero['level'],
             'experience' => (int) $hero['experience'],

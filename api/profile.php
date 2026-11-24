@@ -4,6 +4,7 @@ require __DIR__.'/bootstrap.php';
 header('Cache-Control: private, no-store');
 $own=current_user_id();$pdo=db();
 if ($_SERVER['REQUEST_METHOD']==='POST') {
+    if (playing_as_character()) json_response(['ok'=>false,'error'=>'Сменить пароль можно только в своём профиле.'],403);
     $id=require_user_id();$input=read_json();
     if (!isset($_SESSION['password_token']) || !hash_equals($_SESSION['password_token'],$_SERVER['HTTP_X_PROFILE_TOKEN']??'')) json_response(['ok'=>false,'error'=>'Обновите профиль.'],403);
     $current=$input['current']??null;$new=$input['password']??null;
@@ -32,5 +33,5 @@ $q=$pdo->prepare('SELECT u.id,u.username,DATE(u.created_at) AS joined,h.name,h.l
 $q->execute([$id]);$profile=$q->fetch();
 if (!$profile) json_response(['ok'=>false,'error'=>'Профиль не найден.'],404);
 $extra=[];
-if (!$public) {$extra['token']=$_SESSION['password_token']??=bin2hex(random_bytes(32));}
+if (!$public && !playing_as_character()) {$extra['token']=$_SESSION['password_token']??=bin2hex(random_bytes(32));}
 json_response(['ok'=>true,'profile'=>$profile,'portrait'=>art_versions()['regent']??null]+$extra);

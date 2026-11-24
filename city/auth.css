@@ -1,0 +1,57 @@
+.auth-shell {
+  --gate-gold: #d5b574;
+  place-items: safe center end;
+  padding: clamp(24px, 5vh, 70px) clamp(36px, 10vw, 190px);
+  overflow-y: auto;
+  background: linear-gradient(90deg, transparent 45%, #0b0e10a8), #181c1b var(--gate-image, url("/city/login-gate.webp")) 36% center / cover no-repeat;
+  transform: none;
+}
+.auth-shell .auth-panel {
+  position: relative;
+  isolation: isolate;
+  width: min(100%, 418px);
+  padding: 32px clamp(22px, 3vw, 44px) 36px;
+  border: 1px solid #9c8054;
+  border-radius: 2px;
+  background: linear-gradient(150deg, #242a27fa, #111717fa 62%, #201d18f7);
+  box-shadow: 0 22px 65px #000b, inset 0 0 0 4px #171b19, inset 0 0 0 5px #514934;
+}
+.auth-panel .gate-seal {display: flex; align-items: center; justify-content: center; gap: 15px}
+.gate-seal img {width: 44px; height: 44px; object-fit: contain; mix-blend-mode: lighten}
+.gate-seal::before, .gate-seal::after {content: ""; width: 50px; height: 1px; background: linear-gradient(90deg, transparent, #ab8c50)}
+.gate-seal::after {transform: rotate(180deg)}
+.auth-panel .auth-title {
+  margin: 9px 0 28px;
+  text-align: center;
+  font: small-caps 500 clamp(40px, 4vw, 54px)/1 Georgia, serif;
+  letter-spacing: -.035em;
+  text-transform: none;
+  color: #f2e5c7;
+}
+.auth-panel .tabs {gap: 0; margin-bottom: 22px; padding: 0; border: 0; border-bottom: 1px solid #57503e; border-radius: 0; background: none}
+.auth-panel .tab {border-radius: 0; border-bottom: 2px solid transparent; font: 17px Georgia, serif; letter-spacing: 0; text-transform: none; color: #cbc4b4}
+.auth-panel .tab.is-active {border-color: var(--gate-gold); color: #f9e4ac; background: linear-gradient(0deg, #b7934d24, transparent)}
+.auth-panel .auth-form {gap: 16px}
+.auth-panel label {color: #e3dac7; font-size: 13px; font-weight: 600; text-transform: none; letter-spacing: .01em}
+.auth-panel input {background: #0c1111; color: #fff4da; border: 1px solid #5e5949; border-radius: 2px; font-size: 16px}
+.auth-panel input:focus {border-color: var(--gate-gold); box-shadow: 0 0 0 2px #e2c78226}
+.auth-panel .submit {
+  margin-top: 5px; min-height: 46px; color: #241d12; background: linear-gradient(#e6cb91, #bb995c);
+  border: 1px solid #e0bf80; border-radius: 2px; font: bold 17px Georgia, serif; text-transform: none;
+  box-shadow: inset 0 0 0 2px #745c3329, 0 4px 16px #0006;
+}
+.auth-panel button:focus-visible {outline: 2px solid #ffdf98; outline-offset: 3px}
+.auth-panel .message {min-height: 0; color: #ffd49e}
+.auth-panel .message:not(:empty) {margin-top: 16px}
+@media (max-width: 700px) {
+  .auth-shell {place-items: safe center; padding: clamp(90px, 20svh, 180px) 16px 24px; background-position: 28% center}
+  .auth-shell .auth-panel {padding: 22px 24px 26px}
+  .auth-panel .auth-title {margin-bottom: 20px}
+}
+@media (max-height: 570px) {
+  .auth-shell {padding-block: 12px}
+  .auth-panel .gate-seal {display: none}
+}
+@media (prefers-reduced-motion: reduce) {
+  .auth-shell, .auth-shell.is-visible, .intro {transition: none}
+}

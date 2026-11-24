@@ -3,9 +3,13 @@ declare(strict_types=1);
 
 function touch_player_presence(int $userId): void
 {
-    $key = hash('sha256', session_id());
+    $key = hash('sha256', session_id().($_SERVER['HTTP_X_PLAYER_VIEW'] ?? ''));
     $now = time();
-    $previous = $_SESSION['presence'] ?? null;
+    if (playing_as_character()) {
+        $previous = &$_SESSION['player_views'][$_SERVER['HTTP_X_PLAYER_VIEW']]['presence'];
+    } else {
+        $previous = &$_SESSION['presence'];
+    }
     if ($key === ($previous['key'] ?? null) && $now - $previous['at'] < 25) {
         return;
     }
@@ -19,7 +23,7 @@ function touch_player_presence(int $userId): void
     if ($key !== ($previous['key'] ?? null)) {
         $pdo->exec('DELETE FROM player_presence WHERE last_seen < CURRENT_TIMESTAMP - INTERVAL 1 DAY LIMIT 100');
     }
-    $_SESSION['presence'] = ['key' => $key, 'at' => $now];
+    $previous = ['key' => $key, 'at' => $now];
 }
 
 function leave_player_presence(): void

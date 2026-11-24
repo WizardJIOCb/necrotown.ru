@@ -5,11 +5,13 @@ require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/player_presence.php';
 
 $action = $_GET['action'] ?? '';
+if (playing_as_character() && $action !== 'me') json_response(['ok'=>false,'error'=>'Сначала вернитесь в свой профиль.'],403);
 
 if ($action === 'me') {
     $userId = current_user_id();
     if ($userId === null) {
-        json_response(['ok' => true, 'authenticated' => false]);
+        $art = art_versions();
+        json_response(['ok' => true, 'authenticated' => false, 'gateArt' => $art['login-gate'] ?? null]);
     }
 
     json_response([

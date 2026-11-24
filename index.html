@@ -1149,7 +1149,9 @@
     }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
-  <link rel="stylesheet" href="/city/city.css?v=district2">
+  <link rel="stylesheet" href="/city/city.css?v=illustrations1">
+  <link rel="stylesheet" href="/city/player-view.css?v=1">
+  <link rel="stylesheet" href="/city/auth.css?v=gate1">
   <link rel="stylesheet" href="/city/profile.css?v=scroll1">
 </head>
 <body>
@@ -1159,6 +1161,7 @@
 
   <section class="auth-shell" id="authShell" aria-hidden="true">
     <div class="auth-panel" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+      <div class="gate-seal" aria-hidden="true"><img src="/city/crest.webp" alt="" width="48" height="48"></div>
       <h2 class="auth-title" id="authTitle">NecroTown</h2>
 
       <div class="tabs" role="tablist" aria-label="Режим авторизации">
@@ -1242,7 +1245,8 @@
     </section>
   </section>
 
-  <script src="/city/development.js?v=1"></script>
+  <script src="/city/player-view.js?v=1"></script>
+  <script src="/city/development.js?v=illustrations1"></script>
   <script src="/city/district.js?v=admin1"></script>
   <script src="/city/expedition.js?v=intro2"></script>
   <script>
@@ -1623,7 +1627,7 @@
     }
 
     async function api(url, options = {}) {
-      const response = await fetch(url, {
+      const response = await playerView.apiFetch(url, {
         credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
@@ -2151,14 +2155,14 @@
       if (activeView === "profile") {
         const host = document.createElement("section");
         workPanel.replaceChildren(host);
-        import("/city/profile.js?v=1").then(module => module.showProfile(host)).catch(() => { host.textContent = "Не удалось загрузить профиль."; });
+        import("/city/profile.js?v=view1").then(module => module.showProfile(host)).catch(() => { host.textContent = "Не удалось загрузить профиль."; });
         return;
       }
       if (activeView === "admin" && state.isAdmin) {
         const host = document.createElement("section");
         host.className = "admin-desk";
         workPanel.replaceChildren(host);
-        import("/city/admin.js?v=1").then(module => module.openAdmin(host, async () => {
+        import("/city/admin.js?v=view1").then(module => module.openAdmin(host, async () => {
           Object.assign(state, (await api("/api/game.php")).state);
           renderResources();
           renderHero();
@@ -2257,6 +2261,12 @@
 
     function showGame(nextState) {
       state = nextState;
+      playerView.showBanner(resourceLine, state.hero.username);
+      logoutButton.hidden = playerView.active;
+      if (location.hash === '#profile') {
+        activeView='profile';
+        menuButtons.forEach(item=>item.classList.toggle('is-active',item.dataset.view===activeView));
+      }
       document.querySelector('[data-view="admin"]').hidden = !state.isAdmin;
       applyCityArt();
       syncCityClock();
@@ -2361,6 +2371,9 @@
         if (data?.authenticated) {
           showGame(data.state);
         } else {
+          if (data?.gateArt && /^[a-f0-9]{64}$/.test(data.gateArt)) {
+            authShell.style.setProperty('--gate-image', 'url("/api/art.php?asset=login-gate&v=' + data.gateArt + '")');
+          }
           introDelay.then(showAuth);
         }
       });

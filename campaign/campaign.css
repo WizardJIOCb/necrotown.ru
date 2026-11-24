@@ -51,3 +51,9 @@ footer{display:flex;justify-content:space-between;gap:12px;color:#969a8a;font-si
 .city-mode .mast,.guest-mode .wordmark,.guest-mode .city {display:none}
 .guest-mode .mast-inner {min-height:44px}
 .embedded footer {padding-block:14px 0}
+
+.roster {display:grid;grid-template-columns:repeat(auto-fit,minmax(min(155px,100%),1fr));align-items:stretch}
+.roster button {display:flex;flex-direction:column;min-width:0;overflow:hidden;padding:0}
+.ally-portrait {display:block;width:100%;aspect-ratio:1.5;object-fit:cover;border-bottom:1px solid var(--line)}
+.ally-copy {display:flex;flex:1;flex-direction:column;gap:3px;padding:10px}
+.ally-copy small:last-child {margin-top:auto;padding-top:4px}

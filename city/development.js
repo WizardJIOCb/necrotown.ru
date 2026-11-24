@@ -34,7 +34,7 @@ function renderResearch() {
   const d=state.development;
   workPanel.innerHTML='<div class="work-head"><h2 class="work-title">Изучение</h2><span class="work-meta">Город · ур. '+d.level+'</span></div><div class="tech-list">'+Object.entries(d.research).map(([id,t])=>{
     const done=d.known.includes(id), locked=t.cityLevel>d.level;
-    return '<article><h3>'+escapeHtml(t.name)+'</h3><p>'+escapeHtml(t.description)+'</p><p>+'+t.amount+effectLabels[t.effect]+'</p><small>'+stockText(t.cost)+'</small><button type="button" data-development="research" data-key="'+escapeHtml(id)+'" '+(done||locked||!canAfford(t.cost)?'disabled':'')+'>'+(done?'Изучено':locked?'Нужен город ур. '+t.cityLevel:'Изучить')+'</button></article>';
+    return '<article><img class="study-art" src="'+cityArt('study-'+id)+'" alt=""><div class="study-copy"><h3>'+escapeHtml(t.name)+'</h3><p>'+escapeHtml(t.description)+'</p><p>+'+t.amount+effectLabels[t.effect]+'</p><small>'+stockText(t.cost)+'</small><button type="button" data-development="research" data-key="'+escapeHtml(id)+'" '+(done||locked||!canAfford(t.cost)?'disabled':'')+'>'+(done?'Изучено':locked?'Нужен город ур. '+t.cityLevel:'Изучить')+'</button></div></article>';
   }).join('')+'</div><p data-dev-notice role="status"></p>';
 }
 document.addEventListener('click',async event=>{

@@ -13,7 +13,8 @@ function group(title, rows) {
   section.append(list);return section;
 }
 async function request(url,config={}) {
-  const r=await fetch(url,{cache:'no-store',...config});const d=await r.json();
+  const fetchProfile=typeof playerView==='undefined'?fetch:playerView.apiFetch;
+  const r=await fetchProfile(url,{cache:'no-store',...config});const d=await r.json();
   if(!r.ok || !d.ok) throw Error(d.error||'Не удалось загрузить профиль.');
   return d;
 }
@@ -67,6 +68,6 @@ export async function showProfile(host,id=null) {
       const note=el('p','Из прежнего сохранения учтены победы по пройденным точкам: '+p.legacy_wins+'. Подробная статистика боёв ведётся с 24.11.2026.');
       note.className='profile-note';host.append(note);
     }
-    if(own)host.append(passwordForm(d.token));
+    if(own && d.token)host.append(passwordForm(d.token));
   } catch(e){host.textContent=e.message;}
 }

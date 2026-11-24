@@ -33,7 +33,7 @@ async function request(change) {
   if(busy)return false;
   busy=true; $('notice').textContent='';
   try {
-    const res=await fetch(apiPath, change ? {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...change,version:save.version})}:{cache:'no-store'});
+    const res=await playerView.apiFetch(apiPath, change ? {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...change,version:save.version})}:{cache:'no-store'});
     const data=await res.json();
     if(!data.ok) {
       if(data.save){save=data.save;view=save.battle?'battle':'map';render();}
@@ -90,7 +90,9 @@ function armyPage() {
   const unlock={breaker:'quarry',ranger:'ford'};
   $('army').innerHTML='<div class="army-panel"><div class="tag">Военный совет</div><h2>Ваш легион</h2><p>Выберите трёх бойцов. Их сила складывается при каждом приказе.</p><div class="roster">'+['blade','shield','seer','breaker','ranger'].map(id=>{
     const u=atlas.units[id], locked=unlock[id]&&!save.cleared.includes(unlock[id]);
-    return '<button data-ally="'+id+'" aria-pressed="'+party.includes(id)+'" class="'+(party.includes(id)?'chosen':'')+'" '+(locked?'disabled':'')+'><strong>'+html(u.name)+'</strong><small>Урон '+u.attack+' · Защита '+u.stat+'</small><small>'+html(u.description)+'</small><small>'+(locked?'Откроется: '+html(nodes[unlock[id]].name):party.includes(id)?'✓ В строю':'В резерве')+'</small></button>';
+    const asset='ally-'+id, revision=atlas.artVersions?.[asset];
+    const portrait=revision?'/api/art.php?asset='+asset+'&v='+revision:'/campaign/'+asset+'.webp';
+    return '<button data-ally="'+id+'" aria-pressed="'+party.includes(id)+'" class="'+(party.includes(id)?'chosen':'')+'" '+(locked?'disabled':'')+'><img class="ally-portrait" src="'+portrait+'" alt=""><span class="ally-copy"><strong>'+html(u.name)+'</strong><small>Урон '+u.attack+' · Защита '+u.stat+'</small><small>'+html(u.description)+'</small><small>'+(locked?'Откроется: '+html(nodes[unlock[id]].name):party.includes(id)?'✓ В строю':'В резерве')+'</small></span></button>';
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
@@ -221,7 +223,8 @@ async function init() {
       render();if(view==='map')selectMap(focus,true);
       tellCity('expedition-ready');
       if (!embedded && account) {
-        const heartbeat = () => fetch('/api/chat.php?presence=heartbeat', {cache:'no-store'}).catch(() => {});
+        playerView.showBanner(document.querySelector('main'));
+        const heartbeat = () => playerView.apiFetch('/api/chat.php?presence=heartbeat', {cache:'no-store'}).catch(() => {});
         heartbeat();
         setInterval(heartbeat, 30000);
         document.addEventListener('visibilitychange', () => { if (!document.hidden) heartbeat(); });
