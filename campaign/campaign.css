@@ -28,3 +28,9 @@ footer{display:flex;justify-content:space-between;gap:12px;color:#969a8a;font-si
 .foe-marker i{display:block;background:#bf7862;height:100%}.foe-marker.chosen i{background:#ffce70}
 .foe-marker:after{content:"";position:absolute;inset:-5px -2px}
 @media(max-width:650px){#field{aspect-ratio:1.18;min-height:265px}}
+.camera-controls{position:absolute;right:10px;bottom:10px;z-index:2;display:flex;align-items:stretch;overflow:hidden;border:1px solid #806e50;border-radius:4px;background:#181715ed;color:#f4dfb8;box-shadow:0 2px 8px #0008}
+.camera-controls button{min-width:40px;min-height:38px;padding:0 8px;border:0;background:transparent;color:inherit;font:22px/1 system-ui;touch-action:manipulation}
+.camera-controls [data-zoom=reset]{min-width:63px;border-inline:1px solid #65583f;font:600 14px system-ui;font-variant-numeric:tabular-nums}
+.camera-controls button:enabled:hover,.camera-controls button:focus-visible{background:#514531}
+.camera-controls button:focus-visible{outline-offset:-3px}.camera-controls button:disabled{opacity:.4}
+@media(pointer:coarse){.camera-controls button{min-width:44px;min-height:44px}}

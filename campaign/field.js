@@ -1,6 +1,8 @@
 import * as W from './vendor/cinderwatch-scene.js';
 
 const {THREE, R, CAM, FX, LT, KIT} = W;
+const cameraZoom = {min:75, max:350, initial:200, step:25};
+const zoomKey = 'necrotown.battle.zoom';
 const stages = {
   gate: [4,'ashen'], quarry: [31,'ashen'], ford:[17,'fen'], bridge:[12,'frost'],
   belfry:[21,'ashen'], forge:[35,'ember'], throne:[4,'ember']
@@ -50,6 +52,17 @@ export function createField(canvas,units) {
   const labels=canvas.parentElement.querySelector('.field-labels')||document.createElement('div');
   if(!labels.isConnected){labels.className='field-labels';canvas.after(labels);}
   const pointer=new THREE.Vector3();
+  const frameElement=canvas.parentElement;
+  const controls=frameElement.querySelector('.camera-controls');
+  const zoomOut=controls?.querySelector('[data-zoom=out]');
+  const zoomIn=controls?.querySelector('[data-zoom=in]');
+  const zoomReset=controls?.querySelector('[data-zoom=reset]');
+  let zoom=cameraZoom.initial;
+  try {
+    const saved=Number(localStorage.getItem(zoomKey));
+    if(saved>=cameraZoom.min&&saved<=cameraZoom.max)zoom=saved;
+  } catch {}
+  const formationSize=new THREE.Vector2();
   let board, stage, center, squads=[],markers=[],selected=0,battle,action,last=0,frame=0,time=1.8;
   let measuredSeconds=0, measuredFrames=0;
   const ring=new THREE.Mesh(new THREE.RingGeometry(.75,.82,40),new THREE.MeshBasicMaterial({color:0xffcf73,transparent:true,opacity:.77,depthWrite:false,side:THREE.DoubleSide}));
@@ -72,8 +85,6 @@ export function createField(canvas,units) {
       const score=Math.hypot(p.x,p.z)-span*.95;
       if(score<best){best=score;center=s;}
     }
-    const p=W.pathAt(board,center,{});
-    CAM.x=p.x*.65; CAM.z=p.z*.65; CAM.y=p.y+.55;
     for(let i=0;i<28;i++){W.updateFX(.045,time);time+=.045;}
     action=null;
   }
@@ -104,13 +115,59 @@ export function createField(canvas,units) {
         }
       });
     }
+    // Fit the projected feet and heads of both formations, including tall bosses.
+    W.applyCamera();
+    const right=new THREE.Vector3().setFromMatrixColumn(R.cam.matrixWorld,0);
+    const up=new THREE.Vector3().setFromMatrixColumn(R.cam.matrixWorld,1);
+    const bounds=new THREE.Box2();
+    const point=new THREE.Vector2();
+    for(const squad of squads) for(const member of squad.members){
+      point.set(member.pos.dot(right),member.pos.dot(up));
+      bounds.expandByPoint(point);
+      point.y+=(member.scale*1.55+.5)*up.y;
+      bounds.expandByPoint(point);
+    }
+    bounds.getSize(formationSize);
+    const focus=place(center,0);
+    const mid=bounds.getCenter(new THREE.Vector2());
+    const shiftX=mid.x-focus.dot(right), shiftY=mid.y-focus.dot(up);
+    focus.addScaledVector(right,shiftX).addScaledVector(up,shiftY);
+    CAM.x=focus.x; CAM.y=focus.y; CAM.z=focus.z;
   }
   function layout(){
     if(!battle||canvas.clientWidth<1)return;
     W.resizeRenderer();const narrow=canvas.clientWidth<650;
     R.viewH=narrow?21:23;R.fitW=narrow?23:37;
-    CAM.zoom=narrow?1.12:1.08;W.applyCamera();
+    const aspect=R.dw/R.dh;
+    const baseHeight=Math.max(R.viewH,R.fitW/aspect);
+    const formationHeight=Math.max(formationSize.y/.70,formationSize.x/(aspect*.83));
+    const defaultHeight=Math.max(baseHeight/(narrow?2.24:2.16),formationHeight);
+    CAM.zoom=(baseHeight/defaultHeight)*(zoom/cameraZoom.initial);
+    W.applyCamera();
   }
+  function showZoom(){
+    if(!controls)return;
+    controls.hidden=false;
+    zoomReset.textContent=Math.round(zoom)+'%';
+    zoomOut.disabled=zoom<=cameraZoom.min;
+    zoomIn.disabled=zoom>=cameraZoom.max;
+  }
+  function setZoom(value){
+    const next=Math.max(cameraZoom.min,Math.min(cameraZoom.max,value));
+    if(next===zoom)return;
+    zoom=next;layout();showZoom();
+    try {localStorage.setItem(zoomKey,String(zoom));} catch {}
+  }
+  zoomOut?.addEventListener('click',()=>setZoom(Math.round(zoom)-cameraZoom.step));
+  zoomIn?.addEventListener('click',()=>setZoom(Math.round(zoom)+cameraZoom.step));
+  zoomReset?.addEventListener('click',()=>setZoom(cameraZoom.initial));
+  frameElement.addEventListener('wheel',event=>{
+    if(!battle||event.ctrlKey||event.metaKey||!event.deltaY)return;
+    event.preventDefault();
+    const unit=event.deltaMode===1?16:event.deltaMode===2?canvas.clientHeight:1;
+    const delta=Math.max(-120,Math.min(120,event.deltaY*unit));
+    setZoom(zoom*Math.exp(-delta*.0018));
+  },{passive:false});
   new ResizeObserver(layout).observe(canvas);
   function impact(event){
     const foe=squads.find(s=>s.side===1&&s.i===event.target);
@@ -149,6 +206,7 @@ export function createField(canvas,units) {
     W.updateFX(dt,time);
     const target=squads.find(s=>s.side&&s.i===(action?.target??selected));
     ring.visible=false;
+    W.applyCamera();
     const torches=[];
     for(const squad of squads){
       const enemy=!!squad.side, foe=battle.foes[squad.i], alive=!enemy||foe.hp>0;
@@ -186,7 +244,7 @@ export function createField(canvas,units) {
     if(board.gem)board.gem.rotation.y=time;
     W.updateDebris(dt,board.heightAt,()=>{});
     W.endParts();W.endFX();W.updateLights(dt,time,CAM.x,CAM.z);W.updateTorchLights(dt,torches,CAM.x,CAM.z);W.collectMistLights();
-    W.applyCamera();W.renderFrame();
+    W.renderFrame();
     if(canvas.dataset.ready!=='true')canvas.dataset.ready='true';
     if(t>=1)action=null;
   }
@@ -201,10 +259,11 @@ export function createField(canvas,units) {
         markers[i].classList.toggle('chosen',i===selected);
       });
       layout();
+      showZoom();
       if(!frame){last=performance.now();tick(last);}
     },
     play(card,target,before){action={card,target,before,at:performance.now(),hit:false,broken:new Set()};},
-    hide(){cancelAnimationFrame(frame);frame=0;action=null;battle=null;W.clearDebris();labels.replaceChildren();}
+    hide(){cancelAnimationFrame(frame);frame=0;action=null;battle=null;if(controls)controls.hidden=true;W.clearDebris();labels.replaceChildren();}
   };
 }
 

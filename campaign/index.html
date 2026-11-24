@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#161a17">
   <title>Поход за Престолом праха · NecroTown</title>
-  <link rel="stylesheet" href="campaign.css?v=ashen2">
+  <link rel="stylesheet" href="campaign.css?v=camera1">
 </head>
 <body>
   <header class="mast"><div class="mast-inner">
@@ -27,10 +27,20 @@
     </section>
     <section id="army" hidden></section>
     <section id="battle" hidden aria-label="Поле боя">
-      <div class="fieldframe"><div class="fieldtop"><span id="round"></span><span id="biome"></span><button id="audio" aria-pressed="false">Звук выкл.</button></div><canvas id="field" aria-label="Трёхмерная диорама боя"></canvas><div class="field-labels"></div><p id="fallback" hidden>Тактический режим · выберите цель под полем</p></div>
+      <div class="fieldframe">
+        <div class="fieldtop"><span id="round"></span><span id="biome"></span><button id="audio" aria-pressed="false">Звук выкл.</button></div>
+        <canvas id="field" aria-label="Трёхмерная диорама боя"></canvas>
+        <div class="field-labels"></div>
+        <div class="camera-controls" role="group" aria-label="Масштаб камеры" hidden>
+          <button type="button" data-zoom="out" aria-label="Отдалить камеру" title="Отдалить камеру">−</button>
+          <button type="button" data-zoom="reset" aria-label="Вернуть начальный масштаб" title="Вернуть начальный масштаб"></button>
+          <button type="button" data-zoom="in" aria-label="Приблизить камеру" title="Приблизить камеру">+</button>
+        </div>
+        <p id="fallback" hidden>Тактический режим · выберите цель под полем</p>
+      </div>
       <div id="orders"></div>
     </section>
     <footer><span id="account"></span><a href="vendor/LICENSE-cinderwatch.txt">Модели Cinderwatch</a></footer>
   </main>
-  <script type="module" src="campaign.js?v=ashen2"></script>
+  <script type="module" src="campaign.js?v=camera1"></script>
 </body></html>
