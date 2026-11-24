@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Профиль героя · NecroTown</title>
+  <link rel="icon" href="/favicon.ico?v=1">
+  <link rel="stylesheet" href="/city/profile.css?v=1">
+</head>
+<body class="public-profile">
+  <header><a href="/">NecroTown</a></header>
+  <main id="profile" aria-label="Профиль героя"></main>
+  <script type="module">
+    import {showProfile} from '/city/profile.js?v=1';
+    const id=new URLSearchParams(location.search).get('id') || '';
+    showProfile(document.getElementById('profile'),id);
+  </script>
+</body>
+</html>

@@ -1149,7 +1149,8 @@
     }
     .top-menu .expedition-menu { text-decoration: none; display: inline-flex; align-items: center; justify-content: center; }
   </style>
-  <link rel="stylesheet" href="/city/city.css?v=mentions1">
+  <link rel="stylesheet" href="/city/city.css?v=admin1">
+  <link rel="stylesheet" href="/city/profile.css?v=1">
 </head>
 <body>
   <main class="intro" id="intro">
@@ -1208,6 +1209,7 @@
       <button class="menu-button" type="button" data-view="army">Армия</button>
       <button class="menu-button" type="button" data-view="campaign">Кампания</button>
       <button class="menu-button" type="button" data-view="profile">Профиль</button>
+      <button class="menu-button" type="button" data-view="admin" hidden>Админка</button>
       <button class="logout" id="logoutButton" type="button">Выход</button>
     </nav>
 
@@ -1240,7 +1242,8 @@
     </section>
   </section>
 
-  <script src="/city/district.js?v=1"></script>
+  <script src="/city/development.js?v=1"></script>
+  <script src="/city/district.js?v=admin1"></script>
   <script src="/city/expedition.js?v=intro2"></script>
   <script>
     const intro = document.getElementById("intro");
@@ -2144,6 +2147,25 @@
 
     function renderWork() {
       workPanel.dataset.view = activeView;
+      if (activeView === "research") { renderResearch(); return; }
+      if (activeView === "profile") {
+        const host = document.createElement("section");
+        workPanel.replaceChildren(host);
+        import("/city/profile.js?v=1").then(module => module.showProfile(host)).catch(() => { host.textContent = "Не удалось загрузить профиль."; });
+        return;
+      }
+      if (activeView === "admin" && state.isAdmin) {
+        const host = document.createElement("section");
+        host.className = "admin-desk";
+        workPanel.replaceChildren(host);
+        import("/city/admin.js?v=1").then(module => module.openAdmin(host, async () => {
+          Object.assign(state, (await api("/api/game.php")).state);
+          renderResources();
+          renderHero();
+          applyCityArt();
+        })).catch(() => { host.textContent = "Не удалось загрузить админку."; });
+        return;
+      }
       if (activeView === "campaign" || activeView === "army") {
         openExpedition(workPanel, activeView);
         return;
@@ -2177,24 +2199,31 @@
     }
 
     // The address stays in the stored message, so it also works when reloading chat history.
-    const chatAddress = /^@([a-zа-яё0-9_-]+),\s*/iu;
+    const chatAddress = /^((?:@[a-zа-яё0-9_-]+,\s*)+)/iu;
+    function addressedPlayers(text) {
+      const prefix = text.match(chatAddress)?.[1] || "";
+      return Array.from(prefix.matchAll(/@([a-zа-яё0-9_-]+)/giu), match => match[1]);
+    }
 
-    onlinePlayers.addEventListener("click", event => {
+    chatForm.closest(".chat-panel").addEventListener("click", event => {
       const button = event.target.closest("button[data-recipient]");
       if (!button) return;
       const input = chatForm.elements.message;
       const draft = input.value.replace(chatAddress, "");
-      input.value = "@" + button.dataset.recipient + ", " + draft;
+      const names = addressedPlayers(input.value);
+      const name = button.dataset.recipient;
+      if (!names.some(existing => existing.toLowerCase() === name.toLowerCase())) names.push(name);
+      input.value = names.map(nick => "@" + nick + ", ").join("") + draft;
       input.setCustomValidity("");
       input.focus();
       input.setSelectionRange(input.value.length, input.value.length);
     });
 
     function renderChatMessage(message, today) {
-      const address = message.message.match(chatAddress);
-      const forMe = address && address[1].toLowerCase() === state.hero?.username?.toLowerCase();
+      const forMe = addressedPlayers(message.message).some(name => name.toLowerCase() === state.hero?.username?.toLowerCase());
+      const nick = escapeHtml(message.username);
       return `<div class="chat-message${forMe ? " chat-for-me" : ""}">
-        ${forMe ? '<span class="chat-to-you">Вам</span> ' : ""}${chatTimestamp(message.created_epoch, today)}<strong>${escapeHtml(message.username)}</strong>: ${escapeHtml(message.message)}
+        ${forMe ? '<span class="chat-to-you">Вам</span> ' : ""}${chatTimestamp(message.created_epoch, today)}<button type="button" class="chat-author" data-recipient="${nick}" aria-label="Обратиться к ${nick}">${nick}</button>: ${escapeHtml(message.message)}
       </div>`;
     }
 
@@ -2228,6 +2257,9 @@
 
     function showGame(nextState) {
       state = nextState;
+      document.querySelector('[data-view="admin"]').hidden = !state.isAdmin;
+      applyCityArt();
+      syncCityClock();
       document.body.classList.add("is-game");
       gameShell.setAttribute("aria-hidden", "false");
       authShell.setAttribute("aria-hidden", "true");

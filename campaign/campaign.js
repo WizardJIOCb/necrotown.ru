@@ -15,6 +15,7 @@ if (embedded) {
     render();
   });
 }
+const html = value => String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[ch]);
 const symbols = {gate:'⚔',quarry:'⚒',ford:'≈',bridge:'♜',belfry:'♝',forge:'⚒',throne:'♛'};
 let atlas, save, nodes, account, field, fieldPromise, focus='gate', target=0, view='map', busy=false, party=[];
 const available = n => !n.from.length || n.from.some(id=>save.cleared.includes(id));
@@ -64,21 +65,24 @@ function mapRoads() {
 function mapPage() {
   const chosen=nodes[focus];
   const chapter=atlas.chapters.find(c=>c.id===chosen.chapter);
-  $('chart').style.setProperty('--atlas-art','url("'+chapter.art+'")');
+  const asset=chapter.art.replace(/\.webp$/, '');
+  const revision=atlas.artVersions?.[asset];
+  const art=revision?'/api/art.php?asset='+encodeURIComponent(asset)+'&v='+revision:chapter.art;
+  $('chart').style.setProperty('--atlas-art','url("'+art+'")');
   $('chapters').innerHTML=atlas.chapters.map((c,i)=>{
     const open=chapterOpen(c), selected=c.id===chapter.id;
     const progress=chapterNodes(c.requires||c.id);
     const hint=open?'':' · '+progress.filter(cleared).length+'/'+progress.length+' на первой карте';
-    return '<button type="button" data-chapter="'+c.id+'" aria-pressed="'+selected+'" '+(open?'':'disabled')+'>'+['I','II'][i]+'. '+c.name+hint+'</button>';
+    return '<button type="button" data-chapter="'+c.id+'" aria-pressed="'+selected+'" '+(open?'':'disabled')+'>'+['I','II'][i]+'. '+html(c.name)+hint+'</button>';
   }).join('');
   $('pins').innerHTML=chapterNodes(chosen.chapter).map(n=>{
     const status=cleared(n)?'cleared':available(n)?'available':'locked';
     const label=cleared(n)?'Пройдено':available(n)?'Доступно':'Закрыто';
-    return '<button data-node="'+n.id+'" aria-label="'+n.name+' · '+label+'" aria-pressed="'+(focus===n.id)+'" class="pin '+status+(focus===n.id?' selected':'')+'" style="left:'+n.x+'%;top:'+n.y+'%">'+(cleared(n)?'✓':n.symbol||symbols[n.id])+'<span>'+n.name+'</span></button>';
+    return '<button data-node="'+n.id+'" aria-label="'+html(n.name)+' · '+label+'" aria-pressed="'+(focus===n.id)+'" class="pin '+status+(focus===n.id?' selected':'')+'" style="left:'+n.x+'%;top:'+n.y+'%">'+(cleared(n)?'✓':html(n.symbol||symbols[n.id]))+'<span>'+html(n.name)+'</span></button>';
   }).join('');
-  const info=cleared(chosen)?'Точка пройдена':available(chosen)?'Доступен штурм':'Откроется после: '+chosen.from.map(id=>nodes[id].name).join(' или ');
+  const info=cleared(chosen)?'Точка пройдена':available(chosen)?'Доступен штурм':'Откроется после: '+chosen.from.map(id=>html(nodes[id].name)).join(' или ');
   const replay=cleared(chosen);
-  $('brief').innerHTML='<div><div class="tag">'+chosen.region+' · '+info+'</div><h2>'+chosen.name+'</h2><p>'+((replay&&chosen.ending)||chosen.story)+'</p><small>Противники · '+chosen.enemies.map(id=>atlas.units[id].name).join(', ')+'　/　'+(replay?'Награда уже получена':chosen.reward+' душ')+'</small></div>'+
+  $('brief').innerHTML='<div><div class="tag">'+html(chosen.region)+' · '+info+'</div><h2>'+html(chosen.name)+'</h2><p>'+html((replay&&chosen.ending)||chosen.story)+'</p><small>Противники · '+chosen.enemies.map(id=>html(atlas.units[id].name)).join(', ')+'　/　'+(replay?'Награда уже получена':chosen.reward+' душ')+'</small></div>'+
     (available(chosen)?'<button class="action" data-start>'+(replay?'Сыграть ещё раз':'Начать бой →')+'</button>':'');
   mapRoads();
 }
@@ -86,7 +90,7 @@ function armyPage() {
   const unlock={breaker:'quarry',ranger:'ford'};
   $('army').innerHTML='<div class="army-panel"><div class="tag">Военный совет</div><h2>Ваш легион</h2><p>Выберите трёх бойцов. Их сила складывается при каждом приказе.</p><div class="roster">'+['blade','shield','seer','breaker','ranger'].map(id=>{
     const u=atlas.units[id], locked=unlock[id]&&!save.cleared.includes(unlock[id]);
-    return '<button data-ally="'+id+'" aria-pressed="'+party.includes(id)+'" class="'+(party.includes(id)?'chosen':'')+'" '+(locked?'disabled':'')+'><strong>'+u.name+'</strong><small>Урон '+u.attack+' · Защита '+u.stat+'</small><small>'+u.description+'</small><small>'+(locked?'Откроется: '+nodes[unlock[id]].name:party.includes(id)?'✓ В строю':'В резерве')+'</small></button>';
+    return '<button data-ally="'+id+'" aria-pressed="'+party.includes(id)+'" class="'+(party.includes(id)?'chosen':'')+'" '+(locked?'disabled':'')+'><strong>'+html(u.name)+'</strong><small>Урон '+u.attack+' · Защита '+u.stat+'</small><small>'+html(u.description)+'</small><small>'+(locked?'Откроется: '+html(nodes[unlock[id]].name):party.includes(id)?'✓ В строю':'В резерве')+'</small></button>';
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
@@ -108,22 +112,22 @@ function battlePage() {
   $('round').textContent='Ход '+(end?Math.max(1,b.turn-1):b.turn);
   $('biome').textContent=n.region;
   if(field)showField();else void fieldForBattle();
-  const partyPower=save.party.reduce((t,id)=>t+atlas.units[id].attack,0);
-  const squadGuard=save.party.reduce((t,id)=>t+atlas.units[id].stat,0);
-  const sideDamage=save.party.includes('ranger')?2:0;
+  const partyPower=(b.powerBonus||0)+save.party.reduce((t,id)=>t+atlas.units[id].attack,0);
+  const squadGuard=(b.guardBonus||0)+save.party.reduce((t,id)=>t+atlas.units[id].stat,0);
+  const sideDamage=save.party.includes('ranger')?atlas.balance.rangerSplash:0;
   let body='<div class="hud"><strong>Здоровье легиона · '+b.hp+' / '+b.max+'</strong><span>Заряды эфира　'+b.charge+' / 3</span></div><div class="hp"><i style="width:'+(100*b.hp/b.max)+'%"></i></div>';
   if(end) {
     const victory=b.status==='won', newUnit=b.node==='quarry'?'Костолом':b.node==='ford'?'Лучница брода':'';
     const nextChapter=victory&&!b.replay&&atlas.chapters.find(c=>c.requires===n.chapter&&chapterOpen(c));
     let outcome='Ответный удар врагов снял последнее здоровье легиона.';
     if(victory)outcome=b.replay?'Награда за эту точку уже получена.':'Добыча · '+n.reward+' душ.'+(newUnit?' В отряде новый союзник: '+newUnit+'.':'');
-    body+='<div class="result"><div><div class="tag">'+(victory?'Победа':'Поражение')+'</div><h2>'+(victory?(n.victory||(b.replay?'Бой выигран':'Путь открыт')):'Легион разбит')+'</h2><p>'+outcome+'</p>'+(!victory?'<p data-order-log></p>':'')+'</div><button class="action" data-leave>'+(nextChapter?nextChapter.name+' →':'К карте похода →')+'</button></div>';
+    body+='<div class="result"><div><div class="tag">'+(victory?'Победа':'Поражение')+'</div><h2>'+(victory?html(n.victory||(b.replay?'Бой выигран':'Путь открыт')):'Легион разбит')+'</h2><p>'+outcome+'</p>'+(!victory?'<p data-order-log></p>':'')+'</div><button class="action" data-leave>'+(nextChapter?html(nextChapter.name)+' →':'К карте похода →')+'</button></div>';
   } else {
-    body+='<div class="tag">Цель · следующий удар врага</div><div class="target-row">'+b.foes.map((f,i)=>'<button class="target" data-target="'+i+'" aria-pressed="'+(i===target)+'" '+(!f.hp?'disabled':'')+'><strong>'+atlas.units[f.kind].name+'</strong><small>'+f.hp+'/'+f.max+' здоровья · '+(f.hp?'удар '+f.intent:'повержен')+'</small></button>').join('')+'</div>';
+    body+='<div class="tag">Цель · следующий удар врага</div><div class="target-row">'+b.foes.map((f,i)=>'<button class="target" data-target="'+i+'" aria-pressed="'+(i===target)+'" '+(!f.hp?'disabled':'')+'><strong>'+html(atlas.units[f.kind].name)+'</strong><small>'+f.hp+'/'+f.max+' здоровья · '+(f.hp?'удар '+f.intent:'повержен')+'</small></button>').join('')+'</div>';
     body+='<div class="card-row">'+[
       ['strike','Натиск',partyPower+' урона · +1 эфир'],
-      ['guard','Стена щитов',Math.floor(partyPower/2)+' урона · щит '+(squadGuard+13)+' · +1 эфир'],
-      ['nova','Пепельный круг',(partyPower+4)+' цели, '+(13+sideDamage)+' остальным · 2 эфира']
+      ['guard','Стена щитов',Math.floor(partyPower/2)+' урона · щит '+(squadGuard+atlas.balance.guardBonus)+' · +1 эфир'],
+      ['nova','Пепельный круг',(partyPower+atlas.balance.novaBonus)+' цели, '+(atlas.balance.novaSplash+sideDamage)+' остальным · 2 эфира']
     ].map(([id,name,desc])=>'<button class="card" data-card="'+id+'" '+(id==='nova'&&b.charge<2?'disabled':'')+'><strong>'+name+'</strong><small>'+desc+'</small></button>').join('')+'</div>';
     body+='<p role="status" data-order-log></p><button class="secondary" data-retreat>Отступить</button>';
   }
@@ -209,7 +213,7 @@ document.addEventListener('click',async event=>{
 });
 async function init() {
   try {
-    const res=await fetch('atlas.json?v=tide1');if(!res.ok)throw Error('Карта недоступна.');
+    const res=await fetch('/api/atlas.php', {cache:'no-store'});if(!res.ok)throw Error('Карта недоступна.');
     atlas=await res.json();nodes=Object.fromEntries(atlas.nodes.map(n=>[n.id,n]));
     if(await request()){
       focus=save.battle?.node||chapterEntry(atlas.chapters.filter(chapterOpen).at(-1).id);

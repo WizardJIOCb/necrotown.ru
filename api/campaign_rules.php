@@ -4,7 +4,8 @@ declare(strict_types=1);
 function atlas(): array
 {
     static $atlas;
-    return $atlas ??= json_decode(file_get_contents(__DIR__ . '/../campaign/atlas.json'), true, 512, JSON_THROW_ON_ERROR);
+    return $atlas ??= ['chapters' => array_values(content_group('chapters')), 'nodes' => array_values(content_group('nodes')),
+        'units' => content_group('units'), 'balance' => content_group('balance')['battle']];
 }
 
 function new_campaign(): array
@@ -23,18 +24,20 @@ function allies(array $save): array
 
 function intent(string $kind, int $turn): int
 {
+    $balance = atlas()['balance'];
     $base = atlas()['units'][$kind]['attack'];
-    if ($kind === 'king' && $turn % 3 === 0) return $base + 12;
-    if ($kind === 'keeper' && $turn % 4 === 0) return $base + 17;
-    if ($kind === 'cantor' && $turn % 3 === 0) return $base + 6;
-    if (in_array($kind, ['brute', 'warden'], true)) return $turn % 2 === 0 ? $base + 7 : 3;
+    if ($kind === 'king' && $turn % 3 === 0) return $base + $balance['kingBonus'];
+    if ($kind === 'keeper' && $turn % 4 === 0) return $base + $balance['keeperBonus'];
+    if ($kind === 'cantor' && $turn % 3 === 0) return $base + $balance['cantorBonus'];
+    if (in_array($kind, ['brute', 'warden'], true)) return $turn % 2 === 0 ? $base + $balance['bruteBonus'] : $balance['bruteLight'];
     return $base;
 }
 
-function campaign_step(array $save, array $input): array
+function campaign_step(array $save, array $input, array $buff = []): array
 {
     $nodes = array_column(atlas()['nodes'], null, 'id');
     $units = atlas()['units'];
+    $balance = atlas()['balance'];
     $action = $input['action'] ?? '';
     $battle = $save['battle'];
     if ($action === 'party') {
@@ -54,13 +57,13 @@ function campaign_step(array $save, array $input): array
             $previousMap = array_filter($nodes, fn($n) => $n['chapter'] === $required);
             if (array_diff(array_keys($previousMap), $save['cleared'])) throw new DomainException('Сначала пройдите все точки предыдущей карты.');
         }
-        $max = 60 + 3 * count($save['cleared']);
+        $max = $balance['baseHealth'] + ($buff['vitality'] ?? 0) + $balance['healthPerVictory'] * count($save['cleared']);
         $foes = [];
         foreach ($node['enemies'] as $kind) {
             $hp = $units[$kind]['stat'];
             $foes[] = ['kind' => $kind, 'hp' => $hp, 'max' => $hp, 'intent' => intent($kind, 1)];
         }
-        $save['battle'] = ['node' => $id, 'replay' => in_array($id, $save['cleared'], true), 'turn' => 1, 'hp' => $max, 'max' => $max, 'charge' => 1,
+        $save['battle'] = ['node' => $id, 'powerBonus' => $buff['power'] ?? 0, 'guardBonus' => $buff['guard'] ?? 0, 'replay' => in_array($id, $save['cleared'], true), 'turn' => 1, 'hp' => $max, 'max' => $max, 'charge' => 1,
             'foes' => $foes, 'status' => 'play', 'log' => 'Отряд готов. Выберите цель и отдайте приказ.'];
     } elseif ($action === 'leave' && $battle) {
         $save['battle'] = null;
@@ -70,16 +73,16 @@ function campaign_step(array $save, array $input): array
         if (!is_int($target) || ($battle['foes'][$target]['hp'] ?? 0) <= 0 ||
             !in_array($card, ['strike', 'guard', 'nova'], true) ||
             ($card === 'nova' && $battle['charge'] < 2)) throw new DomainException('Этот приказ сейчас недоступен.');
-        $power = array_sum(array_map(fn($kind) => $units[$kind]['attack'], $save['party']));
-        $block = array_sum(array_map(fn($kind) => $units[$kind]['stat'], $save['party']));
-        $splash = in_array('ranger', $save['party'], true) ? 2 : 0;
+        $power = ($battle['powerBonus'] ?? 0) + array_sum(array_map(fn($kind) => $units[$kind]['attack'], $save['party']));
+        $block = ($battle['guardBonus'] ?? 0) + array_sum(array_map(fn($kind) => $units[$kind]['stat'], $save['party']));
+        $splash = in_array('ranger', $save['party'], true) ? $balance['rangerSplash'] : 0;
         $focus = $power;
         if ($card === 'guard') {
             $focus = intdiv($power, 2);
-            $block += 13;
+            $block += $balance['guardBonus'];
         } elseif ($card === 'nova') {
-            $focus = $power + 4;
-            $splash += 13;
+            $focus = $power + $balance['novaBonus'];
+            $splash += $balance['novaSplash'];
         }
         $battle['charge'] = $card === 'nova' ? $battle['charge'] - 2 : min(3, $battle['charge'] + 1);
         $incoming = 0;
@@ -90,7 +93,7 @@ function campaign_step(array $save, array $input): array
         }
         unset($foe);
         $loss = max(0, $incoming - $block);
-        $heal = in_array('seer', $save['party'], true) ? 2 : 0;
+        $heal = in_array('seer', $save['party'], true) ? $balance['seerHeal'] : 0;
         $battle['hp'] = max(0, min($battle['max'], $battle['hp'] + $heal) - $loss);
         $battle['log'] = sprintf('Ваш удар: %d. Ответный урон врагов: %d. Щиты поглотили %d, по легиону прошло %d.', $focus, $incoming, min($block, $incoming), $loss);
         $king = array_search('king', array_column($battle['foes'], 'kind'), true);

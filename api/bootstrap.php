@@ -1,5 +1,7 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/content.php';
+require_once __DIR__.'/development_rules.php';
 
 const DB_NAME = 'necrotown';
 const DB_USER = 'nginx';
@@ -126,8 +128,13 @@ function game_state(int $userId): array
          ORDER BY sort_order, id'
     );
     $buildingStmt->execute([$userId]);
+    $buildings = $buildingStmt->fetchAll();
 
     return [
+        'development' => development_view(city_progress($userId), $buildings),
+        'isAdmin' => is_game_admin($userId),
+        'artVersions' => art_versions(),
+        'cityCatalog' => ['city' => content_group('city'), 'houses' => content_group('houses')],
         'hero' => [
             'id' => (int) $hero['id'],
             'username' => $hero['username'],
@@ -151,6 +158,6 @@ function game_state(int $userId): array
                 'status' => $building['status'],
                 'description' => $building['description'],
             ];
-        }, $buildingStmt->fetchAll()),
+        }, $buildings),
     ];
 }

@@ -1,0 +1,18 @@
+.public-profile{margin:0;background:#131711;color:#e3ddcc;font:15px/1.5 system-ui,sans-serif;--border:#464332;color-scheme:dark}
+.public-profile>header,.public-profile main{max-width:980px;margin:auto;padding:16px 20px}
+.public-profile>header a{color:#e5cda1;font:600 26px Georgia,serif;text-decoration:none}
+.hero-profile {color:#e9e3d5;display:grid;gap:14px}
+.profile-head {display:flex;align-items:center;gap:18px;padding:12px 18px;border-bottom:1px solid #62583f;background:linear-gradient(90deg,#20251f,#191c16)}
+.profile-head img{width:80px;height:96px;object-fit:cover;border:1px solid #706346}
+.profile-head :is(h1,h2){font:500 clamp(25px,4vw,43px) Georgia,serif;margin:3px 0;overflow-wrap:anywhere}
+.profile-head small,.profile-head span{color:#ccbc9c;font-size:13px}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:10px}
+.hero-profile .profile-section{padding:14px;background:#20241d;border:1px solid #494935;border-radius:3px}
+.hero-profile h3{margin:0 0 9px;color:#eadcb9;font:500 22px Georgia,serif}
+.hero-profile dl{margin:0}.hero-profile dl div{display:flex;justify-content:space-between;gap:12px;padding:5px 0;border-bottom:1px solid #3b3d32;font-size:13px}
+.hero-profile dd{margin:0;color:#f5e8be;font-weight:bold}
+.profile-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.profile-actions a{color:#dbc69c}.profile-actions button,.password-form button{padding:7px 11px;background:#49432e;border:1px solid #857249;color:#f1dfb8;border-radius:3px;cursor:pointer}
+.password-form {display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.password-form label {display:grid;gap:4px;font-size:13px}.password-form input{max-width:100%;box-sizing:border-box;padding:8px;color:#eae5d9;background:#171915;border:1px solid #58523f}
+.profile-note,.profile-actions [role=status]{font-size:13px;color:#d7c69f}

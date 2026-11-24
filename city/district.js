@@ -1,65 +1,31 @@
-const districtHouses = [
-  {
-    id: "war",
-    name: "Дом Войны",
-    level: 2,
-    status: "Кровавая стража",
-    role: "Военная элита города. Ускоряет зачистку опасных точек и усиливает гарнизон."
-  },
-  {
-    id: "science",
-    name: "Дом Науки",
-    level: 1,
-    status: "Тайная лаборатория",
-    role: "Изучает магию, древние тексты и эфирные аномалии для развития НекроТауна."
-  },
-  {
-    id: "trade",
-    name: "Дом Торговли",
-    level: 1,
-    status: "Ночной рынок",
-    role: "Держит караваны, сделки и редкие товары под контролем вампирской знати."
-  },
-  {
-    id: "necromancy",
-    name: "Дом Некромантии",
-    level: 2,
-    status: "Костяной двор",
-    role: "Следит за нежитью, могильными рабочими и ритуалами повиновения."
-  },
-  {
-    id: "blood",
-    name: "Дом Крови",
-    level: 1,
-    status: "Алые родословные",
-    role: "Развивает вампирские мутации, кровные линии и власть патриархов."
-  },
-  {
-    id: "shadow",
-    name: "Дом Теней",
-    level: 1,
-    status: "Сеть шпионов",
-    role: "Ведёт разведку, скрытые операции и поиск угроз за пределами города."
+function cityArt(key) {
+  const revision = state.artVersions?.[key];
+  return revision ? '/api/art.php?asset=' + encodeURIComponent(key) + '&v=' + revision : '/city/' + key + '.webp';
+}
+
+function applyCityArt() {
+  const shell = document.getElementById('gameShell');
+  for (const key of ['regent','skyline','bones','souls','iron','ether','plague']) {
+    shell.style.setProperty('--art-' + key, 'url("' + cityArt(key) + '")');
   }
-];
+  shell.querySelector('.city-brand img').src = cityArt('crest');
+}
 
 let districtSelection = 'war';
 
 function renderCity() {
   const houses = activeView === 'city';
-  const places = houses ? districtHouses : state.buildings;
+  const places = houses ? Object.entries(state.cityCatalog.houses).map(([id, house]) => ({...house, id})) : state.buildings;
   const chosenId = houses ? districtSelection : selectedBuildingId;
   const selected = places.find(item => item.id === chosenId) || places[0];
   const title = houses ? 'Вампирские дома' : 'Постройки';
   const art = item => {
     const key = houses ? item.id : item.type;
-    return houses || Object.hasOwn(buildingLetters, key) ? '/city/' + key + '.webp' : '/city/skyline.webp';
+    return houses || Object.hasOwn(buildingLetters, key) ? cityArt(key) : cityArt('skyline');
   };
-  const level = item => houses
-    ? (state.vampireHouses?.find(house => house.id === item.id)?.level ?? item.level)
-    : item.level;
+  const level = item => item.level;
   workPanel.innerHTML = `
-    <header class="district-banner"><span>Некрорайон</span><h1>Северный погост</h1></header>
+    <header class="district-banner"><span>Некрорайон</span><h1>${escapeHtml(state.cityCatalog.city.district.name)}</h1></header>
     <div class="district-body"><div class="district-list">
       <h2>${title}</h2>
       <div class="place-grid">${places.map(item => `
@@ -74,7 +40,10 @@ function renderCity() {
       <div><h3>${escapeHtml(selected.name)}</h3><p>${escapeHtml(houses ? selected.role : selected.description)}</p>
         <div class="stat-row"><span>Уровень</span><strong>${level(selected)}</strong></div>
         <div class="stat-row"><span>Статус</span><strong>${escapeHtml(selected.status)}</strong></div>
-      </div></aside>` : ''}</div>`;
+        ${houses ? '' : upgradeControl(selected.id)}
+      </div></aside>` : ''}</div>
+    ${houses ? cityDevelopment() : ''}<p data-dev-notice role="status"></p>`;
+  if (houses) updateCollection();
 
   workPanel.querySelector('.place-grid').onclick = event => {
     const button = event.target.closest('.place-card');

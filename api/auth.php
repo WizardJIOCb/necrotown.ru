@@ -64,33 +64,27 @@ if ($action === 'register') {
         $userStmt->execute([$username, $email, $hash]);
         $userId = (int) $pdo->lastInsertId();
 
+        $start = content_group('starting');
+        $hero = $start['hero'];
         $heroStmt = $pdo->prepare(
-            'INSERT INTO heroes (user_id, name, avatar_seed) VALUES (?, ?, ?)'
+            'INSERT INTO heroes (user_id, name, avatar_seed, level, experience, health, attack, defense, energy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
         );
-        $heroStmt->execute([$userId, $username, $avatarSeed]);
+        $heroStmt->execute([$userId, $username, $avatarSeed, $hero['level'], $hero['experience'], $hero['health'], $hero['attack'], $hero['defense'], $hero['energy']]);
 
         $resourceStmt = $pdo->prepare(
             'INSERT INTO resources (user_id, bones, souls, iron, ether, plague)
-             VALUES (?, 120, 35, 80, 18, 7)'
+             VALUES (?, ?, ?, ?, ?, ?)'
         );
-        $resourceStmt->execute([$userId]);
+        $res = $start['resources'];
+        $resourceStmt->execute([$userId, $res['bones'], $res['souls'], $res['iron'], $res['ether'], $res['plague']]);
 
         $buildingStmt = $pdo->prepare(
             'INSERT INTO buildings (user_id, type, name, level, status, description, sort_order)
              VALUES (?, ?, ?, ?, ?, ?, ?)'
         );
 
-        $buildings = [
-            ['crypt', 'Склеп', 1, 'Готов', 'Сердце поселения. Здесь хранятся кости и появляются первые рабочие.', 10],
-            ['forge', 'Кузница', 1, 'Готов', 'Переплавляет железо в снаряжение для отрядов и строителей.', 20],
-            ['academy', 'Обелиск знаний', 1, 'Изучение', 'Открывает исследования города, армии и ритуалов.', 30],
-            ['barracks', 'Казармы', 1, 'Набор', 'Позволяет собирать отряды для защиты и походов.', 40],
-            ['market', 'Тёмный рынок', 1, 'Тихо', 'Место обмена ресурсами, слухами и редкими предметами.', 50],
-            ['wall', 'Стена праха', 1, 'Готов', 'Защитный периметр города от живых и слишком наглых соседей.', 60],
-        ];
-
-        foreach ($buildings as $building) {
-            $buildingStmt->execute([$userId, ...$building]);
+        foreach (content_group('templates') as $type => $b) {
+            $buildingStmt->execute([$userId, $type, $b['name'], $b['level'], $b['status'], $b['description'], $b['sort_order']]);
         }
 
         $pdo->commit();

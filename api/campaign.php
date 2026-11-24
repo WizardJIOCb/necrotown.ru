@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 require __DIR__ . '/bootstrap.php';
 require __DIR__ . '/campaign_rules.php';
+require __DIR__.'/stats.php';
 
 header('Cache-Control: no-store');
 $method = $_SERVER['REQUEST_METHOD'];
@@ -29,15 +30,18 @@ try {
             json_response(['ok'=>false, 'error'=>'Состояние похода обновилось.', 'save'=>$save], 409);
         }
         $previous = $save;
-        $save = campaign_step($save, $input);
+        $buff = $pdo && ($input['action'] ?? '')==='start' ? technology_effects(city_progress($user)['technologies']) : [];
+        $save = campaign_step($save, $input, $buff);
         if ($pdo) {
             $update = $pdo->prepare('UPDATE campaign_saves SET progress=? WHERE user_id=?');
             $update->execute([json_encode($save, JSON_UNESCAPED_UNICODE), $user]);
+            $reward = 0;
             if (count($previous['cleared']) < count($save['cleared'])) {
                 $nodes = array_column(atlas()['nodes'], null, 'id');
                 $reward = $nodes[$save['battle']['node']]['reward'];
                 $pdo->prepare('UPDATE resources SET souls=souls+? WHERE user_id=?')->execute([$reward, $user]);
             }
+            record_battle_stats($user, $previous, $save, $input['action'], $reward);
         } else {
             $_SESSION['campaign'] = $save;
         }

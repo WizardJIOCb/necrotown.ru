@@ -1,0 +1,243 @@
+{
+  "city": {
+    "district": {
+      "name": "Северный погост"
+    }
+  },
+  "houses": {
+    "war": {
+      "name": "Дом Войны",
+      "level": 2,
+      "status": "Кровавая стража",
+      "role": "Военная элита города. Ускоряет зачистку опасных точек и усиливает гарнизон."
+    },
+    "science": {
+      "name": "Дом Науки",
+      "level": 1,
+      "status": "Тайная лаборатория",
+      "role": "Изучает магию, древние тексты и эфирные аномалии для развития НекроТауна."
+    },
+    "trade": {
+      "name": "Дом Торговли",
+      "level": 1,
+      "status": "Ночной рынок",
+      "role": "Держит караваны, сделки и редкие товары под контролем вампирской знати."
+    },
+    "necromancy": {
+      "name": "Дом Некромантии",
+      "level": 2,
+      "status": "Костяной двор",
+      "role": "Следит за нежитью, могильными рабочими и ритуалами повиновения."
+    },
+    "blood": {
+      "name": "Дом Крови",
+      "level": 1,
+      "status": "Алые родословные",
+      "role": "Развивает вампирские мутации, кровные линии и власть патриархов."
+    },
+    "shadow": {
+      "name": "Дом Теней",
+      "level": 1,
+      "status": "Сеть шпионов",
+      "role": "Ведёт разведку, скрытые операции и поиск угроз за пределами города."
+    }
+  },
+  "templates": {
+    "crypt": {
+      "name": "Склеп",
+      "level": 1,
+      "status": "Готов",
+      "description": "Сердце поселения. Здесь хранятся кости и появляются первые рабочие.",
+      "sort_order": 10
+    },
+    "forge": {
+      "name": "Кузница",
+      "level": 1,
+      "status": "Готов",
+      "description": "Переплавляет железо в снаряжение для отрядов и строителей.",
+      "sort_order": 20
+    },
+    "academy": {
+      "name": "Обелиск знаний",
+      "level": 1,
+      "status": "Изучение",
+      "description": "Открывает исследования города, армии и ритуалов.",
+      "sort_order": 30
+    },
+    "barracks": {
+      "name": "Казармы",
+      "level": 1,
+      "status": "Набор",
+      "description": "Позволяет собирать отряды для защиты и походов.",
+      "sort_order": 40
+    },
+    "market": {
+      "name": "Тёмный рынок",
+      "level": 1,
+      "status": "Тихо",
+      "description": "Место обмена ресурсами, слухами и редкими предметами.",
+      "sort_order": 50
+    },
+    "wall": {
+      "name": "Стена праха",
+      "level": 1,
+      "status": "Готов",
+      "description": "Защитный периметр города от живых и слишком наглых соседей.",
+      "sort_order": 60
+    }
+  },
+  "starting": {
+    "hero": {
+      "level": 1,
+      "experience": 0,
+      "health": 100,
+      "attack": 12,
+      "defense": 8,
+      "energy": 50
+    },
+    "resources": {
+      "bones": 120,
+      "souls": 35,
+      "iron": 80,
+      "ether": 18,
+      "plague": 7
+    }
+  },
+  "balance": {
+    "battle": {
+      "baseHealth": 60,
+      "healthPerVictory": 3,
+      "guardBonus": 13,
+      "novaBonus": 4,
+      "novaSplash": 13,
+      "rangerSplash": 2,
+      "seerHeal": 2,
+      "kingBonus": 12,
+      "keeperBonus": 17,
+      "cantorBonus": 6,
+      "bruteBonus": 7,
+      "bruteLight": 3
+    }
+  },
+  "construction": {
+    "city": {
+      "cost": {
+        "bones": 40,
+        "iron": 20,
+        "souls": 6
+      },
+      "maxLevel": 10
+    },
+    "crypt": {
+      "cost": {
+        "bones": 15,
+        "iron": 6
+      },
+      "maxLevel": 10,
+      "resource": "bones",
+      "yieldAmount": 2
+    },
+    "forge": {
+      "cost": {
+        "bones": 12,
+        "iron": 12
+      },
+      "maxLevel": 10,
+      "resource": "iron",
+      "yieldAmount": 2
+    },
+    "academy": {
+      "cost": {
+        "iron": 12,
+        "souls": 8
+      },
+      "maxLevel": 10,
+      "resource": "ether",
+      "yieldAmount": 2
+    },
+    "barracks": {
+      "cost": {
+        "bones": 18,
+        "iron": 8
+      },
+      "maxLevel": 10,
+      "resource": "bones",
+      "yieldAmount": 2
+    },
+    "market": {
+      "cost": {
+        "bones": 12,
+        "iron": 6
+      },
+      "maxLevel": 10,
+      "resource": "souls",
+      "yieldAmount": 2
+    },
+    "wall": {
+      "cost": {
+        "iron": 10,
+        "bones": 12
+      },
+      "maxLevel": 10,
+      "resource": "plague",
+      "yieldAmount": 2
+    }
+  },
+  "research": {
+    "stonecraft": {
+      "name": "Костяная кладка",
+      "description": "Снижает цену улучшений города и построек.",
+      "cityLevel": 1,
+      "cost": {
+        "souls": 8,
+        "iron": 8
+      },
+      "effect": "discount",
+      "amount": 15
+    },
+    "quarries": {
+      "name": "Подземные промыслы",
+      "description": "Увеличивает добычу в городских постройках.",
+      "cityLevel": 1,
+      "cost": {
+        "bones": 20,
+        "souls": 8
+      },
+      "effect": "production",
+      "amount": 50
+    },
+    "drill": {
+      "name": "Строй легиона",
+      "description": "Повышает урон отряда в новых боях.",
+      "cityLevel": 2,
+      "cost": {
+        "iron": 22,
+        "souls": 16
+      },
+      "effect": "power",
+      "amount": 3
+    },
+    "ward": {
+      "name": "Печать стража",
+      "description": "Усиливает защиту легиона в новых боях.",
+      "cityLevel": 2,
+      "cost": {
+        "ether": 8,
+        "souls": 14
+      },
+      "effect": "guard",
+      "amount": 3
+    },
+    "pact": {
+      "name": "Договор с прахом",
+      "description": "Увеличивает запас здоровья легиона в новых боях.",
+      "cityLevel": 3,
+      "cost": {
+        "plague": 8,
+        "souls": 20
+      },
+      "effect": "vitality",
+      "amount": 15
+    }
+  }
+}
