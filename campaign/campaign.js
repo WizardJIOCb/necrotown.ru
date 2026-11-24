@@ -58,18 +58,22 @@ function armyPage() {
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
-  if(!fieldPromise)fieldPromise=import('./field.js').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
+  if(!fieldPromise)fieldPromise=import('./field.js?v=ashen2').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
     $('fallback').hidden=false;return null;
   });
   field=await fieldPromise;
-  if(view==='battle'&&save.battle)field?.show(save,nodes[save.battle.node],target);
+  if(view==='battle'&&save.battle&&field)showField();
+}
+function showField() {
+  try {field.show(save,nodes[save.battle.node],target);}
+  catch(error){console.error(error);field?.hide();field=null;$('fallback').hidden=false;}
 }
 function battlePage() {
   const b=save.battle, n=nodes[b.node];
   if(!b.foes[target]?.hp)target=Math.max(0,b.foes.findIndex(f=>f.hp));
   $('round').textContent='Ход '+b.turn;
   $('biome').textContent=n.region;
-  if(field)field.show(save,n,target);else void fieldForBattle();
+  if(field)showField();else void fieldForBattle();
   const end=b.status!=='play';
   const partyPower=save.party.reduce((t,id)=>t+atlas.units[id].attack,0);
   const squadGuard=save.party.reduce((t,id)=>t+atlas.units[id].stat,0);
@@ -140,8 +144,8 @@ document.addEventListener('click',async event=>{
     $('notice').textContent='';armyPage();
   }else if(d.party!==undefined){
     if(await request({action:'party',party})){view='map';render();}
-  }else if(d.target!==undefined){
-    target=Number(d.target);battlePage();
+  }else if(d.target!==undefined||d.pick!==undefined){
+    target=Number(d.target??d.pick);battlePage();
   }else if(d.card){
     const old=save.battle.foes,index=target;
     if(await request({action:'order',card:d.card,target:index})){

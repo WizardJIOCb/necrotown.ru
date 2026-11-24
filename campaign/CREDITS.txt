@@ -1,6 +1,6 @@
-Procedural character geometry, equipment and animation adapted from Kevin Ngo's Cinderwatch.
+Procedural terrain, foliage, fortifications, characters, materials, lighting and post-processing adapted from Kevin Ngo's Cinderwatch.
 Source: https://github.com/kevintngo/cinderwatch/tree/797234e36ac28fd2a8c0b85936d7bded6816a689
-Original files: src/00-util.js, 10-gfx.js, 32-props.js and 50-rig.js.
+Adapted modules: src/00, 10, 20, 29 through 33, 40, 41, 50, 51, tower blueprints from 60 and the camera from 90.
 License: vendor/LICENSE-cinderwatch.txt (MIT).
 
 Three.js r170 is bundled locally. License: vendor/LICENSE-three.txt (MIT).

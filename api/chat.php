@@ -8,7 +8,7 @@ $pdo = db();
 
 if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'GET') {
     $stmt = $pdo->query(
-        'SELECT cm.id, u.username, cm.message, cm.created_at
+        'SELECT cm.id, u.username, cm.message, cm.created_at, UNIX_TIMESTAMP(cm.created_at) AS created_epoch
          FROM chat_messages cm
          JOIN users u ON u.id = cm.user_id
          ORDER BY cm.id DESC

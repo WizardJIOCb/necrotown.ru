@@ -19,3 +19,12 @@ footer{display:flex;justify-content:space-between;gap:12px;color:#969a8a;font-si
 @media(max-width:650px){.mast-inner{min-height:52px;gap:15px}.wordmark{font-size:19px}.wordmark i{display:none}nav{gap:11px}nav button,.city{font-size:12px}.heading{margin:20px 0 14px}#progress{max-width:83px;flex-direction:column;gap:2px;align-items:end}.chart{aspect-ratio:1.95}.brief{align-items:start;gap:14px;flex-direction:column}.brief .action{width:100%}.card-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.card{min-width:0;padding:8px 6px}.card strong{font-size:16px}.card small{font-size:11px}.battlepanel{padding:12px}.fieldtop{top:5px;left:5px;right:5px}.target{padding:6px}.legend{gap:12px}.pin{width:32px;height:32px}.city{white-space:nowrap}}
 
 .fieldtop button{pointer-events:auto;color:var(--paper);background:#1b201ade;border:1px solid var(--line);border-radius:3px;padding:3px 8px;font:12px system-ui}.fieldtop #biome{margin-right:auto}
+
+.fieldframe{background:#161923}
+#field{height:auto;aspect-ratio:2.05;max-height:69vh;min-height:290px}
+.fieldtop{z-index:2}.fieldtop span,.fieldtop button{background:#181715e8;border:1px solid #706046;border-radius:2px}
+.field-labels{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.foe-marker{position:absolute;pointer-events:auto;transform:translate(-50%,-50%);width:22px;height:5px;background:#221a20;border:1px solid #170e0c;padding:0;box-shadow:0 0 0 1px #c6a87a85}
+.foe-marker i{display:block;background:#bf7862;height:100%}.foe-marker.chosen i{background:#ffce70}
+.foe-marker:after{content:"";position:absolute;inset:-5px -2px}
+@media(max-width:650px){#field{aspect-ratio:1.18;min-height:265px}}

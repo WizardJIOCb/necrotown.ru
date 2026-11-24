@@ -1061,6 +1061,14 @@
       line-height: 1.35;
     }
 
+    .chat-message time {
+      color: #b6aaa1;
+      font: 0.8em/1.4 system-ui, sans-serif;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+      margin-right: 0.45em;
+    }
+
     .chat-message strong {
       color: var(--gold);
     }
@@ -2183,6 +2191,17 @@
       renderWork();
     }
 
+    const chatClock = new Intl.DateTimeFormat("ru-RU", {hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
+    const chatCalendar = new Intl.DateTimeFormat("ru-RU", {day: "2-digit", month: "2-digit", year: "numeric"});
+    function chatTimestamp(epoch, today) {
+      if (epoch == null) return "";
+      const date = new Date(Number(epoch) * 1000);
+      if (!Number.isFinite(date.getTime())) return "";
+      const day = chatCalendar.format(date);
+      const label = (day === today ? day + " · " : "") + chatClock.format(date);
+      return `<time datetime="${date.toISOString()}">${label}</time>`;
+    }
+
     async function loadChat() {
       if (!state) {
         return;
@@ -2190,9 +2209,10 @@
 
       try {
         const data = await api("/api/chat.php");
+        const today = chatCalendar.format(new Date());
         chatLog.innerHTML = data.messages.map((message) => `
           <div class="chat-message">
-            <strong>${escapeHtml(message.username)}</strong>: ${escapeHtml(message.message)}
+            ${chatTimestamp(message.created_epoch, today)}<strong>${escapeHtml(message.username)}</strong>: ${escapeHtml(message.message)}
           </div>
         `).join("");
         chatLog.scrollTop = chatLog.scrollHeight;
