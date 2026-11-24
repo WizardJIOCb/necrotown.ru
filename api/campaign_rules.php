@@ -84,7 +84,7 @@ function campaign_step(array $save, array $input): array
         $loss = max(0, $incoming - $block);
         $heal = in_array('seer', $save['party'], true) ? 2 : 0;
         $battle['hp'] = max(0, min($battle['max'], $battle['hp'] + $heal) - $loss);
-        $battle['log'] = sprintf('Удар по цели: %d. Щиты поглотили %d. Отряд потерял %d здоровья.', $focus, min($block, $incoming), $loss);
+        $battle['log'] = sprintf('Ваш удар: %d. Ответный урон врагов: %d. Щиты поглотили %d, по легиону прошло %d.', $focus, $incoming, min($block, $incoming), $loss);
         $king = array_search('king', array_column($battle['foes'], 'kind'), true);
         if ($king !== false && $battle['foes'][$king]['hp'] > 0 && $battle['turn'] % 3 === 0) {
             foreach ($battle['foes'] as &$fallen) {

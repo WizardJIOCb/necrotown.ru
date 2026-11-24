@@ -58,7 +58,7 @@ function armyPage() {
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
-  if(!fieldPromise)fieldPromise=import('./field.js?v=camera1').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
+  if(!fieldPromise)fieldPromise=import('./field.js?v=camera2').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
     $('fallback').hidden=false;return null;
   });
   field=await fieldPromise;
@@ -71,17 +71,19 @@ function showField() {
 function battlePage() {
   const b=save.battle, n=nodes[b.node];
   if(!b.foes[target]?.hp)target=Math.max(0,b.foes.findIndex(f=>f.hp));
-  $('round').textContent='Ход '+b.turn;
+  const end=b.status!=='play';
+  // A saved battle's counter points to the next command, including after the last one.
+  $('round').textContent='Ход '+(end?Math.max(1,b.turn-1):b.turn);
   $('biome').textContent=n.region;
   if(field)showField();else void fieldForBattle();
-  const end=b.status!=='play';
   const partyPower=save.party.reduce((t,id)=>t+atlas.units[id].attack,0);
   const squadGuard=save.party.reduce((t,id)=>t+atlas.units[id].stat,0);
   const sideDamage=save.party.includes('ranger')?2:0;
-  let body='<div class="hud"><strong>Легион · '+b.hp+' / '+b.max+'</strong><span>Заряды эфира　'+b.charge+' / 3</span></div><div class="hp"><i style="width:'+(100*b.hp/b.max)+'%"></i></div>';
+  let body='<div class="hud"><strong>Здоровье легиона · '+b.hp+' / '+b.max+'</strong><span>Заряды эфира　'+b.charge+' / 3</span></div><div class="hp"><i style="width:'+(100*b.hp/b.max)+'%"></i></div>';
   if(end) {
     const victory=b.status==='won', newUnit=b.node==='quarry'?'Костолом':b.node==='ford'?'Лучница брода':'';
-    body+='<div class="result"><div><div class="tag">'+(victory?'Победа':'Отступление')+'</div><h2>'+(victory?(b.node==='throne'?'Престол ваш':'Путь открыт'):'Легион разбит')+'</h2><p>'+(victory?'Добыча · '+n.reward+' душ.'+(newUnit?' В отряде новый союзник: '+newUnit+'.':''):'Соберите отряд и вернитесь с другим приказом.')+'</p></div><button class="action" data-leave>К карте похода →</button></div>';
+    const outcome=victory?'Добыча · '+n.reward+' душ.'+(newUnit?' В отряде новый союзник: '+newUnit+'.':''):'Ответный удар врагов снял последнее здоровье легиона.';
+    body+='<div class="result"><div><div class="tag">'+(victory?'Победа':'Поражение')+'</div><h2>'+(victory?(b.node==='throne'?'Престол ваш':'Путь открыт'):'Легион разбит')+'</h2><p>'+outcome+'</p>'+(!victory?'<p data-order-log></p>':'')+'</div><button class="action" data-leave>К карте похода →</button></div>';
   } else {
     body+='<div class="tag">Цель · следующий удар врага</div><div class="target-row">'+b.foes.map((f,i)=>'<button class="target" data-target="'+i+'" aria-pressed="'+(i===target)+'" '+(!f.hp?'disabled':'')+'><strong>'+atlas.units[f.kind].name+'</strong><small>'+f.hp+'/'+f.max+' здоровья · '+(f.hp?'удар '+f.intent:'повержен')+'</small></button>').join('')+'</div>';
     body+='<div class="card-row">'+[
@@ -89,9 +91,11 @@ function battlePage() {
       ['guard','Стена щитов',Math.floor(partyPower/2)+' урона · щит '+(squadGuard+13)+' · +1 эфир'],
       ['nova','Пепельный круг',(partyPower+4)+' цели, '+(13+sideDamage)+' остальным · 2 эфира']
     ].map(([id,name,desc])=>'<button class="card" data-card="'+id+'" '+(id==='nova'&&b.charge<2?'disabled':'')+'><strong>'+name+'</strong><small>'+desc+'</small></button>').join('')+'</div>';
-    body+='<p role="status">'+b.log+'</p><button class="secondary" data-retreat>Отступить</button>';
+    body+='<p role="status" data-order-log></p><button class="secondary" data-retreat>Отступить</button>';
   }
   $('orders').innerHTML='<div class="battlepanel">'+body+'</div>';
+  const log=$('orders').querySelector('[data-order-log]');
+  if(log)log.textContent=b.log;
 }
 function render() {
   const combat=!!save.battle;

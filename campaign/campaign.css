@@ -34,3 +34,5 @@ footer{display:flex;justify-content:space-between;gap:12px;color:#969a8a;font-si
 .camera-controls button:enabled:hover,.camera-controls button:focus-visible{background:#514531}
 .camera-controls button:focus-visible{outline-offset:-3px}.camera-controls button:disabled{opacity:.4}
 @media(pointer:coarse){.camera-controls button{min-width:44px;min-height:44px}}
+@media(any-pointer:fine){#field[data-ready=true]{cursor:grab}.fieldframe.is-panning,.fieldframe.is-panning *{cursor:grabbing}}
+.fieldframe.is-panning{user-select:none}

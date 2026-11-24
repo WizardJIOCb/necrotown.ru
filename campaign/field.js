@@ -63,6 +63,8 @@ export function createField(canvas,units) {
     if(saved>=cameraZoom.min&&saved<=cameraZoom.max)zoom=saved;
   } catch {}
   const formationSize=new THREE.Vector2();
+  const formationFocus=new THREE.Vector3();
+  let drag=null, suppressDragClick=false, panLimit=0;
   let board, stage, center, squads=[],markers=[],selected=0,battle,action,last=0,frame=0,time=1.8;
   let measuredSeconds=0, measuredFrames=0;
   const ring=new THREE.Mesh(new THREE.RingGeometry(.75,.82,40),new THREE.MeshBasicMaterial({color:0xffcf73,transparent:true,opacity:.77,depthWrite:false,side:THREE.DoubleSide}));
@@ -75,6 +77,7 @@ export function createField(canvas,units) {
     const [seed,biome]=stages[node.id];
     W.BIOME.start=W.BIOMES.findIndex(item=>item.key===biome);
     board=W.buildBoard(seed,0);R.scene.add(board.group);dressBoard(board);stage=node.id;
+    panLimit=Math.max(...board.chunks.map(chunk=>chunk.cx));
     // Form ranks on a central stretch of the actual generated road. Sampling the
     // path also keeps their feet on the bridge deck when it crosses water.
     let best=Infinity;
@@ -132,6 +135,7 @@ export function createField(canvas,units) {
     const mid=bounds.getCenter(new THREE.Vector2());
     const shiftX=mid.x-focus.dot(right), shiftY=mid.y-focus.dot(up);
     focus.addScaledVector(right,shiftX).addScaledVector(up,shiftY);
+    formationFocus.copy(focus);
     CAM.x=focus.x; CAM.y=focus.y; CAM.z=focus.z;
   }
   function layout(){
@@ -160,7 +164,50 @@ export function createField(canvas,units) {
   }
   zoomOut?.addEventListener('click',()=>setZoom(Math.round(zoom)-cameraZoom.step));
   zoomIn?.addEventListener('click',()=>setZoom(Math.round(zoom)+cameraZoom.step));
-  zoomReset?.addEventListener('click',()=>setZoom(cameraZoom.initial));
+  zoomReset?.addEventListener('click',()=>{
+    CAM.x=formationFocus.x; CAM.z=formationFocus.z;
+    setZoom(cameraZoom.initial);
+  });
+  function finishDrag(){
+    if(!drag)return;
+    const {surface,id,moved}=drag;
+    drag=null;
+    suppressDragClick=moved;
+    frameElement.classList.remove('is-panning');
+    if(surface.hasPointerCapture(id))surface.releasePointerCapture(id);
+  }
+  frameElement.addEventListener('pointerdown',event=>{
+    suppressDragClick=false;
+    if(!battle||event.pointerType!=='mouse'||event.button!==0)return;
+    const surface=event.target.closest('canvas,.foe-marker');
+    if(!surface)return;
+    drag={surface,id:event.pointerId,x:event.clientX,y:event.clientY,moved:false};
+    surface.setPointerCapture(event.pointerId);
+  });
+  frameElement.addEventListener('pointermove',event=>{
+    if(drag?.id!==event.pointerId)return;
+    if(!(event.buttons&1)){finishDrag();return;}
+    const dx=event.clientX-drag.x, dy=event.clientY-drag.y;
+    if(!drag.moved&&Math.hypot(dx,dy)<4)return;
+    drag.moved=true;
+    frameElement.classList.add('is-panning');
+    drag.x=event.clientX;drag.y=event.clientY;
+    const scale=(R.cam.top-R.cam.bottom)/canvas.clientHeight;
+    const depth=dy/Math.sin(CAM.elev);
+    const sin=Math.sin(CAM.yaw), cos=Math.cos(CAM.yaw);
+    CAM.x=THREE.MathUtils.clamp(CAM.x-scale*(dx*cos+depth*sin),-panLimit,panLimit);
+    CAM.z=THREE.MathUtils.clamp(CAM.z+scale*(dx*sin-depth*cos),-panLimit,panLimit);
+  });
+  for(const type of ['pointerup','pointercancel','lostpointercapture']){
+    frameElement.addEventListener(type,event=>{if(drag?.id===event.pointerId)finishDrag();});
+  }
+  window.addEventListener('blur',finishDrag);
+  frameElement.addEventListener('click',event=>{
+    if(!suppressDragClick||!event.detail)return;
+    suppressDragClick=false;
+    event.preventDefault();
+    event.stopPropagation();
+  },true);
   frameElement.addEventListener('wheel',event=>{
     if(!battle||event.ctrlKey||event.metaKey||!event.deltaY)return;
     event.preventDefault();
@@ -263,7 +310,7 @@ export function createField(canvas,units) {
       if(!frame){last=performance.now();tick(last);}
     },
     play(card,target,before){action={card,target,before,at:performance.now(),hit:false,broken:new Set()};},
-    hide(){cancelAnimationFrame(frame);frame=0;action=null;battle=null;if(controls)controls.hidden=true;W.clearDebris();labels.replaceChildren();}
+    hide(){finishDrag();cancelAnimationFrame(frame);frame=0;action=null;battle=null;if(controls)controls.hidden=true;W.clearDebris();labels.replaceChildren();}
   };
 }
 
