@@ -71,9 +71,11 @@ function mapPage() {
   $('chart').style.setProperty('--atlas-art','url("'+art+'")');
   $('chapters').innerHTML=atlas.chapters.map((c,i)=>{
     const open=chapterOpen(c), selected=c.id===chapter.id;
-    const progress=chapterNodes(c.requires||c.id);
-    const hint=open?'':' · '+progress.filter(cleared).length+'/'+progress.length+' на первой карте';
-    return '<button type="button" data-chapter="'+c.id+'" aria-pressed="'+selected+'" '+(open?'':'disabled')+'>'+['I','II'][i]+'. '+html(c.name)+hint+'</button>';
+    const previous=atlas.chapters.find(ch=>ch.id===c.requires);
+    const progress=chapterNodes(c.requires);
+    const hint=open?'':' · '+html(previous.name)+' '+progress.filter(cleared).length+'/'+progress.length;
+    const number=['I','II','III'][i] ?? String(i+1);
+    return '<button type="button" data-chapter="'+c.id+'" aria-pressed="'+selected+'" '+(open?'':'disabled')+'>'+number+'. '+html(c.name)+hint+'</button>';
   }).join('');
   $('pins').innerHTML=chapterNodes(chosen.chapter).map(n=>{
     const status=cleared(n)?'cleared':available(n)?'available':'locked';

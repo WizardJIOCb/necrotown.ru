@@ -11,6 +11,12 @@
       "name": "Берег утонувших",
       "art": "tide-coast.webp",
       "requires": "ash"
+    },
+    {
+      "id": "hollow",
+      "name": "Полое солнце",
+      "art": "hollow-sun.webp",
+      "requires": "tide"
     }
   ],
   "nodes": [
@@ -336,6 +342,169 @@
       "symbol": "♛",
       "ending": "Синий огонь погас. Корабли легли на дно, и впервые за много лет в гавань вошли живые рыбаки.",
       "victory": "Маяк погас"
+    },
+    {
+      "id": "undertow",
+      "name": "Отливная лестница",
+      "region": "Под маяком",
+      "story": "Когда маяк погас, вода отступила от медной двери. На ступенях лежат свежие рыбьи кости, а из глубины тянет жаром. Пройдите сквозь дозор.",
+      "x": 10,
+      "y": 52,
+      "from": [],
+      "enemies": [
+        "lamplighter",
+        "corsair",
+        "harpooner"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        111,
+        "fen"
+      ],
+      "reward": 30,
+      "symbol": "⚓"
+    },
+    {
+      "id": "mirrors",
+      "name": "Сад зеркал",
+      "region": "Верхняя галерея",
+      "story": "Здесь ловили настоящий солнечный свет. Теперь зеркальщик водит бликом по вашим щитам, показывая стрелкам, куда целиться.",
+      "x": 25,
+      "y": 25,
+      "from": [
+        "undertow"
+      ],
+      "enemies": [
+        "lenskeeper",
+        "harpooner",
+        "lenskeeper"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        122,
+        "dunes"
+      ],
+      "reward": 34,
+      "symbol": "☼"
+    },
+    {
+      "id": "flume",
+      "name": "Сухой акведук",
+      "region": "Нижнее русло",
+      "story": "По дну канала можно обойти зеркальный дозор. У пролома рабочие всё ещё тянут цепь водяного колеса. Их надсмотрщик уже заметил легион.",
+      "x": 28,
+      "y": 78,
+      "from": [
+        "undertow"
+      ],
+      "enemies": [
+        "warden",
+        "lamplighter",
+        "riveter"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        133,
+        "fen"
+      ],
+      "reward": 34,
+      "symbol": "≈"
+    },
+    {
+      "id": "wheel",
+      "name": "Колесо полудня",
+      "region": "Над разломом",
+      "story": "Ось колеса сцепляет обе половины моста. Займите площадку у ступицы, чтобы перевести мост к архиву и литейной.",
+      "x": 48,
+      "y": 48,
+      "from": [
+        "mirrors",
+        "flume"
+      ],
+      "enemies": [
+        "riveter",
+        "lenskeeper",
+        "riveter"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        144,
+        "ashen"
+      ],
+      "reward": 38,
+      "symbol": "⚙"
+    },
+    {
+      "id": "orrery",
+      "name": "Звёздный архив",
+      "region": "Верхний ярус",
+      "story": "На медной карте неба одна звезда движется против остальных. Хранители прячут под картой чертёж машины, которая разжигает солнце под землёй.",
+      "x": 67,
+      "y": 25,
+      "from": [
+        "wheel"
+      ],
+      "enemies": [
+        "cantor",
+        "lenskeeper",
+        "cantor"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        155,
+        "frost"
+      ],
+      "reward": 42,
+      "symbol": "✧"
+    },
+    {
+      "id": "crucible",
+      "name": "Медная литейная",
+      "region": "Нижний ярус",
+      "story": "Литейщики отливают для светила новое сердце. Возьмите разливочный двор, пока по рельсам не подали следующий ковш.",
+      "x": 69,
+      "y": 74,
+      "from": [
+        "wheel"
+      ],
+      "enemies": [
+        "riveter",
+        "lamplighter",
+        "brute"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        166,
+        "ember"
+      ],
+      "reward": 42,
+      "symbol": "⚒"
+    },
+    {
+      "id": "sundial",
+      "name": "Сердце светила",
+      "region": "Камера рассвета",
+      "story": "Зодчий полудня заводит солнечный диск. В нечётные ходы он собирает свет, в чётные бьёт вдвое сильнее обычного. Следите за силой следующего удара.",
+      "x": 89,
+      "y": 42,
+      "from": [
+        "orrery",
+        "crucible"
+      ],
+      "enemies": [
+        "heliarch",
+        "lenskeeper",
+        "riveter"
+      ],
+      "chapter": "hollow",
+      "scene": [
+        177,
+        "ember"
+      ],
+      "reward": 68,
+      "symbol": "☼",
+      "ending": "Диск замер. По пустому акведуку снова пошла морская вода, а в гавани рыбаки впервые увидели у своего маяка обыкновенную тень.",
+      "victory": "Полое солнце погасло"
     }
   ],
   "units": {
@@ -457,6 +626,38 @@
       "attack": 11,
       "stat": 78,
       "gear": "seer",
+      "description": ""
+    },
+    "lamplighter": {
+      "name": "Фонарщик глубин",
+      "model": "skel",
+      "attack": 8,
+      "stat": 28,
+      "gear": "sword",
+      "description": ""
+    },
+    "lenskeeper": {
+      "name": "Зеркальщик",
+      "model": "foot",
+      "attack": 11,
+      "stat": 23,
+      "gear": "bow",
+      "description": ""
+    },
+    "riveter": {
+      "name": "Медный клепальщик",
+      "model": "ogre",
+      "attack": 10,
+      "stat": 40,
+      "gear": "club",
+      "description": ""
+    },
+    "heliarch": {
+      "name": "Зодчий полудня",
+      "model": "giant",
+      "attack": 14,
+      "stat": 102,
+      "gear": "crown",
       "description": ""
     }
   }
