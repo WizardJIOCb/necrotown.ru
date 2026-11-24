@@ -90,7 +90,7 @@ function armyPage() {
   }).join('')+'</div><button class="action" data-party '+(party.length!==3?'disabled':'')+'>Утвердить состав · '+party.length+'/3</button></div>';
 }
 async function fieldForBattle() {
-  if(!fieldPromise)fieldPromise=import('./field.js?v=tide1').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
+  if(!fieldPromise)fieldPromise=import('./field.js?v=focus1').then(m=>m.createField($('field'),atlas.units)).catch(()=>{
     $('fallback').hidden=false;return null;
   });
   field=await fieldPromise;

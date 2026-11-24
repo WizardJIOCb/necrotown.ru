@@ -549,7 +549,12 @@ uniform sampler2D tColor; uniform sampler2D tDepth; uniform vec2 uPx;
 uniform vec4 uDof; uniform vec3 uNear;
 uniform vec2 uDither;
 ${GLSL_BAYER}
-float cocAt(float d){ float z = d - uDof.x; return z > 0.0 ? clamp((z - uDof.y) / uDof.z, 0.0, 1.0) * uDof.w : clamp((-z - uNear.x) / uNear.y, 0.0, 1.0) * uDof.w * uNear.z; }
+float cocAt(float d){
+  float z = d - uDof.x;
+  const float farBlurScale = 0.65;
+  if (z > 0.0) return clamp((z - uDof.y) / uDof.z, 0.0, 1.0) * uDof.w * farBlurScale;
+  return clamp((-z - uNear.x) / uNear.y, 0.0, 1.0) * uDof.w * uNear.z;
+}
 void main(){
   float dc = texture2D(tDepth, vUv).x, cc = cocAt(dc);
   vec3 col = texture2D(tColor, vUv).rgb; float tot = 1.0;
